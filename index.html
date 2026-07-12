@@ -4,9 +4,56 @@
 <meta charset="UTF-8">
 <title>Stremio Library & Addon Migration</title>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; color: #222; }
+  html { color-scheme: light; }
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; color: #222; background: #f7f7fb; }
   h1 { font-size: 1.4rem; }
-  .panel { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .banner {
+    position: relative;
+    border-radius: 14px;
+    padding: 32px 28px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2b1a4a 0%, #5b2a86 45%, #7b3fa0 70%, #2fb8a6 100%);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(91, 42, 134, 0.35);
+  }
+  .banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 85% 20%, rgba(255,255,255,0.16) 0%, transparent 45%),
+      radial-gradient(circle at 10% 90%, rgba(47,184,166,0.35) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .banner-inner { position: relative; display: flex; align-items: center; gap: 18px; }
+  .banner-icon { flex: none; width: 56px; height: 56px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35)); }
+  .banner-text h1 {
+    margin: 0 0 4px;
+    font-size: 1.6rem;
+    letter-spacing: 0.2px;
+    color: #fff;
+  }
+  .banner-text p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.85);
+    max-width: 480px;
+  }
+  .banner-badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px;
+    color: #eafffb;
+  }
+  .panel { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: #fff; }
   .panel h2 { margin-top: 0; font-size: 1.1rem; }
   label { display: block; margin: 8px 0 4px; font-size: 0.9rem; }
   input { width: 100%; padding: 8px; box-sizing: border-box; }
@@ -20,8 +67,26 @@
 </style>
 </head>
 <body>
-  <h1>Stremio Library & Addon Migration</h1>
-  <p>Log in to your old (source) and new (destination) Stremio accounts below, then migrate the library and addons. Credentials and data stay in this browser tab only — nothing is sent anywhere except Stremio's own API.</p>
+  <div class="banner">
+    <div class="banner-inner">
+      <svg class="banner-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="playGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#eafffb"/>
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="30" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+        <path d="M25 20 L46 32 L25 44 Z" fill="url(#playGrad)"/>
+        <path d="M12 24 a4 4 0 0 1 8 0 v16 a4 4 0 0 1 -8 0 Z" fill="rgba(255,255,255,0.55)"/>
+      </svg>
+      <div class="banner-text">
+        <h1>Stremio Library & Addon Migration</h1>
+        <p>Log in to your old (source) and new (destination) Stremio accounts below, then migrate the library and addons. Credentials and data stay in this browser tab only — nothing is sent anywhere except Stremio's own API.</p>
+        <span class="banner-badge">No install &middot; No server &middot; Runs in your browser</span>
+      </div>
+    </div>
+  </div>
 
   <div class="panel" id="source-panel">
     <h2>Source account (old)</h2>
