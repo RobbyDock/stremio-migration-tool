@@ -1,3 +1,5 @@
+<img width="1200" height="300" alt="image" src="https://github.com/user-attachments/assets/391b6b7d-3d32-47b8-84be-a441f489c1ce" />
+
 # Stremio Library & Addon Migration
 
 A tiny, click-and-play tool for moving your Stremio library (watched/saved titles + progress) and installed addons from one account to another — useful since Stremio doesn't officially support changing an account's email.
