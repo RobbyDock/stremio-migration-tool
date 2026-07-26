@@ -3,54 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <title>Stremio Library & Addon Migration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  html { color-scheme: light; }
-  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; color: #222; background: #f7f7fb; }
-  h1 { font-size: 1.4rem; }
-  .panel { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: #fff; }
-  .panel h2 { margin-top: 0; font-size: 1.1rem; }
-  label { display: block; margin: 8px 0 4px; font-size: 0.9rem; }
-  input { width: 100%; padding: 8px; box-sizing: border-box; }
-  button { margin-top: 12px; padding: 8px 16px; cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: 0.5; }
-  .status { margin-top: 10px; font-size: 0.9rem; white-space: pre-wrap; }
-  .status.error { color: #b00020; }
-  .status.ok { color: #1b7a1b; }
-  #migrate { font-size: 1rem; font-weight: bold; }
-  a.backup { display: inline-block; margin-top: 8px; font-size: 0.85rem; }
-  .or-divider { margin: 14px 0 4px; font-size: 0.85rem; color: #888; text-align: center; }
+  :root {
+    --bg: #0c0b11;
+    --panel: #17141f;
+    --panel-border: rgba(255,255,255,0.07);
+    --field: #211d2e;
+    --field-border: rgba(255,255,255,0.09);
+    --text: #f2f0f7;
+    --text-dim: rgba(242,240,247,0.55);
+    --text-faint: rgba(242,240,247,0.35);
+    --purple: #6c5dd3;
+    --purple-hi: #8577e0;
+    --green: #6dbb00;
+    --green-hi: #7fd400;
+    --error: #ff5470;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    margin: 0;
+    color: var(--text);
+    background: radial-gradient(1200px 500px at 50% -100px, #201a35 0%, var(--bg) 60%) var(--bg);
+    min-height: 100vh;
+  }
+  button, input, a { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--purple-hi); outline-offset: 2px; }
+
+  .topbar { width: 100%; background: var(--panel); border-bottom: 1px solid var(--panel-border); }
+  .topbar-inner {
+    max-width: 640px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .topbar-inner img { width: 30px; height: 30px; border-radius: 8px; flex: none; }
+  .topbar-inner .name { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; }
+  .topbar-inner .name .dim { color: var(--text-dim); font-weight: 500; margin-left: 4px; }
+
+  .container { max-width: 640px; margin: 0 auto; padding: 28px 20px 64px; }
+  .lede { color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; margin: 0 0 24px; }
+
+  .panel {
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: var(--panel);
+    transition: border-color 0.15s ease;
+  }
+  .panel:hover { border-color: rgba(255,255,255,0.12); }
+  .panel h2 { margin: 0 0 2px; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .panel h2 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); flex: none; }
+  .panel .sub { margin: 0 0 16px; font-size: 0.78rem; color: var(--text-faint); }
+
+  label { display: block; margin: 12px 0 6px; font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
+  label:first-of-type { margin-top: 0; }
+
+  .field { position: relative; }
+  .field svg {
+    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: var(--text-faint); pointer-events: none;
+  }
+  input[type="email"], input[type="password"] {
+    width: 100%; padding: 11px 14px 11px 38px; box-sizing: border-box;
+    background: var(--field); border: 1px solid var(--field-border); border-radius: 10px;
+    color: var(--text); font-size: 0.9rem;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  input[type="email"]:hover, input[type="password"]:hover { border-color: rgba(255,255,255,0.18); }
+  input[type="email"]:focus, input[type="password"]:focus {
+    outline: none; border-color: var(--purple); background: #241f33;
+  }
+  input::placeholder { color: var(--text-faint); }
+
+  button, .file-label {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 14px; padding: 11px 20px; cursor: pointer;
+    border: none; border-radius: 999px; font-size: 0.88rem; font-weight: 600;
+    background: var(--purple); color: #fff;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  button svg, .file-label svg { width: 16px; height: 16px; flex: none; }
+  button:hover:not(:disabled) { background: var(--purple-hi); }
+  button:active:not(:disabled) { transform: scale(0.98); }
+  button:disabled { cursor: not-allowed; opacity: 0.4; }
+
+  .action-row { display: flex; gap: 10px; margin-top: 14px; }
+  .action-row button, .action-row .file-label { flex: 1; margin: 0; }
+  .file-label {
+    background: transparent; border: 1px solid var(--field-border); color: var(--text-dim);
+  }
+  .file-label:hover { border-color: var(--purple); color: var(--text); }
+  input[type="file"] {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap;
+  }
+
+  .status { margin-top: 12px; font-size: 0.85rem; white-space: pre-wrap; line-height: 1.5; }
+  .status:empty { display: none; }
+  .status.error { color: var(--error); }
+  .status.ok { color: var(--green); }
+
+  #migrate {
+    width: 100%; font-size: 0.98rem; font-weight: 700; padding: 14px 22px;
+    background: var(--green);
+  }
+  #migrate:hover:not(:disabled) { background: var(--green-hi); }
+  #migrate-status { text-align: center; }
+  .hint { font-size: 0.78rem; color: var(--text-faint); text-align: center; margin: 10px 0 0; }
+
+  a.backup {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px; font-size: 0.82rem;
+    color: var(--purple-hi); text-decoration: none; font-weight: 600;
+  }
+  a.backup svg { width: 14px; height: 14px; }
+  a.backup:hover { color: var(--text); text-decoration: underline; }
+
+  pre.report {
+    font-size: 0.75rem; max-height: 220px; overflow: auto;
+    background: #0c0a14; border: 1px solid var(--panel-border);
+    padding: 10px 12px; border-radius: 10px; margin-top: 10px; color: var(--text-dim);
+  }
 </style>
 </head>
 <body>
-  <h1>Stremio Library & Addon Migration</h1>
-  <p>Log in to your old (source) and new (destination) Stremio accounts below, then migrate the library and addons. Credentials and data stay in this browser tab only — nothing is sent anywhere except Stremio's own API.</p>
-
-  <div class="panel" id="source-panel">
-    <h2>Source account (old)</h2>
-    <label for="source-email">Email</label>
-    <input type="email" id="source-email" autocomplete="username">
-    <label for="source-password">Password</label>
-    <input type="password" id="source-password" autocomplete="current-password">
-    <button id="source-login">Log in & fetch library + addons</button>
-    <div class="status" id="source-status"></div>
-    <p class="or-divider">&mdash; or &mdash;</p>
-    <label for="source-file">Import a backup JSON file instead</label>
-    <input type="file" id="source-file" accept="application/json,.json">
-    <div class="status" id="source-file-status"></div>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <img src="https://web.stremio.com/images/stremio_symbol.png" alt="Stremio">
+      <div class="name">Migration Tool <span class="dim">for Stremio</span></div>
+    </div>
   </div>
 
-  <div class="panel" id="dest-panel">
-    <h2>Destination account (new)</h2>
-    <label for="dest-email">Email</label>
-    <input type="email" id="dest-email" autocomplete="username">
-    <label for="dest-password">Password</label>
-    <input type="password" id="dest-password" autocomplete="current-password">
-    <button id="dest-login">Log in</button>
-    <div class="status" id="dest-status"></div>
-  </div>
+  <div class="container">
+    <p class="lede">Move your library and installed addons to a new Stremio account.</p>
 
-  <button id="migrate" disabled>Migrate library + addons &rarr;</button>
-  <div class="status" id="migrate-status"></div>
+    <div class="panel" id="source-panel">
+      <h2><span class="dot"></span>Source account</h2>
+      <p class="sub">The account you're migrating from</p>
+      <label for="source-email">Email</label>
+      <div class="field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <input type="email" id="source-email" autocomplete="username" placeholder="you@example.com">
+      </div>
+      <label for="source-password">Password</label>
+      <div class="field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <input type="password" id="source-password" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+      </div>
+      <div class="action-row">
+        <button id="source-login">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+          Login + Fetch
+        </button>
+        <label class="file-label" for="source-file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
+          Import backup JSON
+        </label>
+        <input type="file" id="source-file" accept="application/json,.json">
+      </div>
+      <div class="status" id="source-status"></div>
+      <div class="status" id="source-file-status"></div>
+    </div>
+
+    <div class="panel" id="dest-panel">
+      <h2><span class="dot"></span>Destination account</h2>
+      <p class="sub">The account you're migrating to</p>
+      <label for="dest-email">Email</label>
+      <div class="field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <input type="email" id="dest-email" autocomplete="username" placeholder="you@example.com">
+      </div>
+      <label for="dest-password">Password</label>
+      <div class="field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <input type="password" id="dest-password" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+      </div>
+      <button id="dest-login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        Log in
+      </button>
+      <div class="status" id="dest-status"></div>
+    </div>
+
+    <button id="migrate" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+      Migrate library & addons
+    </button>
+    <div class="status" id="migrate-status"></div>
+    <p class="hint">Runs entirely in this browser tab — nothing is sent anywhere except Stremio's own API.</p>
+  </div>
 
   <script>
     const API_BASE = 'https://api.strem.io/api';
@@ -185,6 +331,13 @@
       return lines.join('\n');
     }
 
+    function appendReport(statusEl, report) {
+      const pre = document.createElement('pre');
+      pre.className = 'report';
+      pre.textContent = formatReport(report);
+      statusEl.appendChild(pre);
+    }
+
     function downloadBackup(items, addons) {
       const blob = new Blob([JSON.stringify({ items, addons }, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -192,7 +345,7 @@
       a.href = url;
       a.download = `stremio-backup-${Date.now()}.json`;
       a.className = 'backup';
-      a.textContent = 'Download backup JSON';
+      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="M6 12l6 6 6-6"/><path d="M4 20h16"/></svg>Download backup JSON';
       return a;
     }
 
@@ -220,15 +373,7 @@
           msg += ` Sanitized ${fixedCount} item(s) with invalid/empty _mtime or _ctime (these would otherwise break the destination library on load).`;
         }
         setStatus(statusEl, msg, 'ok');
-        const pre = document.createElement('pre');
-        pre.style.fontSize = '0.75rem';
-        pre.style.maxHeight = '220px';
-        pre.style.overflow = 'auto';
-        pre.style.background = '#f0f0f5';
-        pre.style.padding = '8px';
-        pre.style.borderRadius = '4px';
-        pre.textContent = formatReport(report);
-        statusEl.appendChild(pre);
+        appendReport(statusEl, report);
         statusEl.appendChild(downloadBackup(sanitized, addons));
       } catch (err) {
         state.source.authKey = null;
@@ -268,15 +413,7 @@
           msg += ` Sanitized ${fixedCount} item(s) with invalid/empty _mtime or _ctime.`;
         }
         setStatus(statusEl, msg, 'ok');
-        const pre = document.createElement('pre');
-        pre.style.fontSize = '0.75rem';
-        pre.style.maxHeight = '220px';
-        pre.style.overflow = 'auto';
-        pre.style.background = '#f0f0f5';
-        pre.style.padding = '8px';
-        pre.style.borderRadius = '4px';
-        pre.textContent = formatReport(report);
-        statusEl.appendChild(pre);
+        appendReport(statusEl, report);
       } catch (err) {
         state.source.items = null;
         state.source.addons = null;
