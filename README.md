@@ -11,11 +11,15 @@ A tiny, click-and-play tool for moving your Stremio library (watched/saved title
 ## Usage
 
 1. Double-click `index.html` to open it in your browser.
-2. **Source account (old)**: enter the email/password of the account you're migrating *from*, then click **Log in & fetch library + addons**. It'll show how many library items and addons it found, plus a "Download backup JSON" link you can save as a safety net.
+2. **Source account (old)**: enter the email/password of the account you're migrating *from*, then click **Log in & fetch library + addons**. It'll show how many library items and addons it found, plus a "Download backup JSON" link you can save as a safety net. Alternatively, click **Import a backup JSON file instead** to load a previously downloaded backup without logging in again.
 3. **Destination account (new)**: enter the email/password of the account you're migrating *to*, then click **Log in**.
 4. Click **Migrate library + addons →**. This pushes the fetched library items and addon collection to the destination account.
 
 Re-running the migration is safe — library items keep their original IDs, so re-migrating overwrites rather than duplicates.
+
+## Data validation
+
+Every time the source library is loaded (via login or file import), the tool checks for duplicate IDs, invalid/empty `_mtime`/`_ctime` timestamps, and missing required fields, and shows a report. Items with invalid/empty timestamps are automatically sanitized (given a valid timestamp) before they're offered for backup or migration — Stremio's client can fail to load a library that contains one of these, so this is applied unconditionally.
 
 ## Notes
 

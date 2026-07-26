@@ -18,6 +18,7 @@
   .status.ok { color: #1b7a1b; }
   #migrate { font-size: 1rem; font-weight: bold; }
   a.backup { display: inline-block; margin-top: 8px; font-size: 0.85rem; }
+  .or-divider { margin: 14px 0 4px; font-size: 0.85rem; color: #888; text-align: center; }
 </style>
 </head>
 <body>
@@ -32,6 +33,10 @@
     <input type="password" id="source-password" autocomplete="current-password">
     <button id="source-login">Log in & fetch library + addons</button>
     <div class="status" id="source-status"></div>
+    <p class="or-divider">&mdash; or &mdash;</p>
+    <label for="source-file">Import a backup JSON file instead</label>
+    <input type="file" id="source-file" accept="application/json,.json">
+    <div class="status" id="source-file-status"></div>
   </div>
 
   <div class="panel" id="dest-panel">
@@ -109,7 +114,75 @@
 
     function updateMigrateButton() {
       document.getElementById('migrate').disabled =
-        !(state.source.authKey && state.source.items && state.dest.authKey);
+        !(state.source.items && state.source.items.length && state.dest.authKey);
+    }
+
+    function isValidTimestamp(value) {
+      if (typeof value !== 'string' || !value) return false;
+      return !Number.isNaN(Date.parse(value));
+    }
+
+    function validateLibrary(items) {
+      const report = {
+        total: items.length,
+        duplicateIds: [],
+        invalidMtime: [],
+        invalidCtime: [],
+        missingFields: [],
+      };
+      const seen = new Map();
+      const requiredFields = ['_id', '_mtime', '_ctime', 'state', 'name', 'type'];
+      items.forEach((item, i) => {
+        const id = item._id;
+        if (seen.has(id)) {
+          report.duplicateIds.push({ id, indices: [seen.get(id), i] });
+        } else {
+          seen.set(id, i);
+        }
+        if (!isValidTimestamp(item._mtime)) {
+          report.invalidMtime.push({ index: i, id, value: item._mtime, name: item.name });
+        }
+        if (!isValidTimestamp(item._ctime)) {
+          report.invalidCtime.push({ index: i, id, value: item._ctime });
+        }
+        requiredFields.forEach((field) => {
+          if (!(field in item)) report.missingFields.push({ index: i, id, field });
+        });
+      });
+      return report;
+    }
+
+    function sanitizeLibrary(items) {
+      let fixedCount = 0;
+      const sanitized = items.map((item) => {
+        const needsMtime = !isValidTimestamp(item._mtime);
+        const needsCtime = !isValidTimestamp(item._ctime);
+        if (!needsMtime && !needsCtime) return item;
+        fixedCount++;
+        const fallback = isValidTimestamp(item.state && item.state.lastWatched)
+          ? item.state.lastWatched
+          : new Date().toISOString();
+        return {
+          ...item,
+          _mtime: needsMtime ? fallback : item._mtime,
+          _ctime: needsCtime ? fallback : item._ctime,
+        };
+      });
+      return { sanitized, fixedCount };
+    }
+
+    function formatReport(report) {
+      const lines = [];
+      lines.push(`Total library items: ${report.total}`);
+      lines.push(`Duplicate IDs: ${report.duplicateIds.length}`);
+      report.duplicateIds.forEach((d) => lines.push(`  - ${d.id} at indices ${d.indices.join(', ')}`));
+      lines.push(`Invalid/empty _mtime: ${report.invalidMtime.length}`);
+      report.invalidMtime.forEach((b) => lines.push(`  - [${b.index}] ${b.id} (${b.name || 'no name'}) _mtime=${JSON.stringify(b.value)}`));
+      lines.push(`Invalid/empty _ctime: ${report.invalidCtime.length}`);
+      report.invalidCtime.forEach((b) => lines.push(`  - [${b.index}] ${b.id} _ctime=${JSON.stringify(b.value)}`));
+      lines.push(`Missing required fields: ${report.missingFields.length}`);
+      report.missingFields.forEach((m) => lines.push(`  - [${m.index}] ${m.id} missing ${m.field}`));
+      return lines.join('\n');
     }
 
     function downloadBackup(items, addons) {
@@ -138,13 +211,73 @@
         setStatus(statusEl, 'Logged in. Fetching library & addons...');
         const items = await getLibrary(authKey);
         const addons = await getAddons(authKey);
-        state.source.items = items;
+        const report = validateLibrary(items);
+        const { sanitized, fixedCount } = sanitizeLibrary(items);
+        state.source.items = sanitized;
         state.source.addons = addons;
-        setStatus(statusEl, `Fetched ${items.length} library item(s) and ${addons.length} addon(s).`, 'ok');
-        statusEl.appendChild(document.createElement('br'));
-        statusEl.appendChild(downloadBackup(items, addons));
+        let msg = `Fetched ${items.length} library item(s) and ${addons.length} addon(s).`;
+        if (fixedCount) {
+          msg += ` Sanitized ${fixedCount} item(s) with invalid/empty _mtime or _ctime (these would otherwise break the destination library on load).`;
+        }
+        setStatus(statusEl, msg, 'ok');
+        const pre = document.createElement('pre');
+        pre.style.fontSize = '0.75rem';
+        pre.style.maxHeight = '220px';
+        pre.style.overflow = 'auto';
+        pre.style.background = '#f0f0f5';
+        pre.style.padding = '8px';
+        pre.style.borderRadius = '4px';
+        pre.textContent = formatReport(report);
+        statusEl.appendChild(pre);
+        statusEl.appendChild(downloadBackup(sanitized, addons));
       } catch (err) {
         state.source.authKey = null;
+        state.source.items = null;
+        state.source.addons = null;
+        setStatus(statusEl, `Error: ${err.message}`, 'error');
+      }
+      updateMigrateButton();
+    });
+
+    document.getElementById('source-file').addEventListener('change', async () => {
+      const input = document.getElementById('source-file');
+      const statusEl = document.getElementById('source-file-status');
+      const file = input.files && input.files[0];
+      if (!file) return;
+      setStatus(statusEl, 'Reading file...');
+      try {
+        const text = await file.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (err) {
+          throw new Error(`File is not valid JSON: ${err.message}`);
+        }
+        const items = Array.isArray(data) ? data : data.items;
+        const addons = Array.isArray(data) ? [] : (data.addons || []);
+        if (!Array.isArray(items)) {
+          throw new Error('Expected a backup file with an "items" array (as produced by this tool\'s backup download).');
+        }
+        const report = validateLibrary(items);
+        const { sanitized, fixedCount } = sanitizeLibrary(items);
+        state.source.authKey = null;
+        state.source.items = sanitized;
+        state.source.addons = addons;
+        let msg = `Loaded ${items.length} library item(s) and ${addons.length} addon(s) from file.`;
+        if (fixedCount) {
+          msg += ` Sanitized ${fixedCount} item(s) with invalid/empty _mtime or _ctime.`;
+        }
+        setStatus(statusEl, msg, 'ok');
+        const pre = document.createElement('pre');
+        pre.style.fontSize = '0.75rem';
+        pre.style.maxHeight = '220px';
+        pre.style.overflow = 'auto';
+        pre.style.background = '#f0f0f5';
+        pre.style.padding = '8px';
+        pre.style.borderRadius = '4px';
+        pre.textContent = formatReport(report);
+        statusEl.appendChild(pre);
+      } catch (err) {
         state.source.items = null;
         state.source.addons = null;
         setStatus(statusEl, `Error: ${err.message}`, 'error');
