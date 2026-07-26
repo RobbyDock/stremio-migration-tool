@@ -17,11 +17,9 @@ It's one file, `index.html`. No install, no build step, no server — open it in
 
 Running it more than once is safe — library items keep their original IDs, so migrating again overwrites rather than duplicating.
 
-## Why there's a validation step
+## Built-in validation
 
-While putting this together, one of my library items turned out to have a corrupted `_mtime` field — an empty string instead of a real timestamp. Stremio's client can't parse that, and instead of just skipping the one bad item, it aborts loading the *entire* library and shows a "Library not loaded!" error, with a "premature end of input" message that doesn't point anywhere useful.
-
-So now, every time the source library loads, the tool checks for duplicate IDs, missing fields, and bad or empty timestamps, and shows you a short report. Anything broken gets patched with a valid timestamp automatically, before it's ever sent anywhere.
+Every fetch gets checked for duplicate IDs, missing fields, and bad or empty timestamps, with a short report shown right in the UI. Anything broken is patched automatically before it's sent anywhere — no corrupted entries making it into your new account.
 
 ![Validation report](screenshots/validation.png)
 
