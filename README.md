@@ -1,29 +1,53 @@
 # Stremio Library & Addon Migration
 
-Stremio doesn't let you change the email on an account. So if you ever need to move to a new one — new email, got locked out, whatever the reason — you're stuck manually re-adding every show and movie by hand. This is a small tool that copies your library and installed addons straight from one account into another.
+Stremio does not allow you to change the email address associated with an account. If you need to move to a different account, for example because you have a new email address, no longer have access to the original account, or previously shared the account with a roommate, you must normally add all library items and addons again manually.
+
+This tool copies your library and installed addons from one Stremio account to another.
 
 ![Main screen](screenshots/main.png)
 
 ## How it works
 
-It's one file, `index.html`. No install, no build step, no server — open it in a browser and it talks directly to Stremio's own API. Nothing passes through a third party; your credentials and library data go from your browser to Stremio's servers and nowhere else, same as the official app.
+The application consists of a single file: index.html.
 
-## Using it
+No installation, build process, or server is required. Open the file in a web browser and it communicates directly with the Stremio API.
 
-1. Open `index.html` in a browser.
-2. Under **Source account**, log in with the account you're moving *from* and hit **Login + Fetch**. It pulls your library and addons, runs a quick sanity check on the data (more on that below), and gives you a "Download backup JSON" link — worth grabbing as a safety net. If you've already got a backup from a previous run, use **Import backup JSON** instead of logging in again.
-3. Under **Destination account**, log in with the account you're moving *to*.
-4. Click **Migrate library & addons**.
+No data passes through a third-party service. Your credentials and library data are sent directly from your browser to Stremio's servers, in the same way as the official Stremio applications.
 
-Running it more than once is safe — library items keep their original IDs, so migrating again overwrites rather than duplicating.
+## Usage
 
-## Built-in validation
+1. Open `index.html` in a web browser.
+2. In the **Source account** section, sign in to the account that you want to migrate from.
+3. Select **Login + Fetch**.
+   - The tool retrieves your library and installed addons.
+   - The tool validates the retrieved data.
+   - The tool provides a **Download backup JSON** link. Downloading a backup is recommended.
+   - If you already have a backup file, select **Import backup JSON** instead of signing in again.
+4. In the **Destination account** section, sign in to the account that you want to migrate to.
+5. Select **Migrate library & addons**.
 
-Every fetch gets checked for duplicate IDs, missing fields, and bad or empty timestamps, with a short report shown right in the UI. Anything broken is patched automatically before it's sent anywhere — no corrupted entries making it into your new account.
+You can run the migration multiple times safely. Library items keep their original IDs. If an item already exists in the destination account, the tool updates it instead of creating a duplicate.
+
+## Data Validation
+
+The tool validates all retrieved data before migration.
+
+The validation process checks for:
+
+- Duplicate IDs
+- Missing required fields
+- Invalid timestamps
+- Empty timestamps
+
+The tool displays a validation report in the user interface.
+
+If the tool detects invalid or incomplete data, it automatically corrects the issue before migration. This helps prevent corrupted entries from being transferred to the destination account.
 
 ![Validation report](screenshots/validation.png)
 
 ## Notes
 
-- Nothing is written to disk unless you click the backup download link yourself.
-- This relies on Stremio's web API, which is stable in practice but not an officially documented public API — the same one the official apps use. If Stremio changes it, this may need an update.
+- The tool does not save data to disk unless you select **Download backup JSON**.
+- The tool uses the same Stremio web API as the official applications.
+- The Stremio web API is not officially documented as a public API.
+- If Stremio changes the API, this tool may require updates to continue working correctly.
