@@ -4,15 +4,26 @@ Stremio does not allow you to change the email address associated with an accoun
 
 This tool copies your library, watch progress and installed addons from one Stremio account to another.
 
-**Use it online:** [robbydock.github.io/stremio-migration-tool](https://robbydock.github.io/stremio-migration-tool/)
+## Open the tool
+
+**[robbydock.github.io/stremio-migration-tool](https://robbydock.github.io/stremio-migration-tool/)**
+
+Open the link in any web browser, on a computer or a phone. No installation or account is required.
 
 ![Main screen](screenshots/main.jpg)
 
+### Alternative: use a local copy
+
+If you prefer not to use the hosted page, you can run the same file on your computer:
+
+1. Download [`index.html`](https://raw.githubusercontent.com/RobbyDock/stremio-migration-tool/main/index.html). In the browser, select **Save as** if the file opens as text.
+2. Open the downloaded file in a web browser.
+
+The local copy works the same way as the hosted page.
+
 ## How it works
 
-The application consists of a single file: `index.html`.
-
-No installation, build process, or server is required. Use the hosted page above, or download `index.html` and open it in a web browser. The page communicates directly with the Stremio API.
+The application consists of a single file: `index.html`. No installation, build process, or server is required. The page communicates directly with the Stremio API.
 
 No data passes through a third-party service. Your credentials and library data are sent directly from your browser to Stremio's servers, in the same way as the official Stremio applications.
 
