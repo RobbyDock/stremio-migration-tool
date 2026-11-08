@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Tokens match Stremio's web app */
+  /* Colour tokens from Stremio's web app */
   :root {
     --primary-background-color: #0c0b11;
     --secondary-background-color: #1a173e;
@@ -45,7 +45,6 @@
     color: var(--primary-foreground-color);
     overflow-x: hidden;
   }
-  /* Blurred colour fields, same idea as Stremio's sign-in screen */
   body::before {
     content: '';
     position: fixed;
@@ -63,12 +62,10 @@
   [hidden] { display: none !important; }
   svg { flex: none; }
 
-  /* Top bar */
   .topbar-inner {
     max-width: 40rem; margin: 0 auto; padding: 1.25rem 1rem;
     display: flex; align-items: center; gap: 0.75rem;
   }
-  /* Logo lockup: symbol, wordmark, divider, product name */
   .brand { display: flex; align-items: center; min-width: 0; }
   .brand-mark { width: 2rem; height: 2rem; flex: none; }
   .wordmark { flex: none; height: 1rem; width: auto; margin-left: 0.6rem; opacity: 0.92; }
@@ -82,7 +79,6 @@
   .topbar-link:hover { color: var(--primary-foreground-color); background: var(--overlay-color); }
   .topbar-link svg { width: 1.15rem; height: 1.15rem; }
 
-  /* Page */
   main { max-width: 40rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
   .hero { text-align: center; margin-bottom: 2.25rem; }
   .hero h1 {
@@ -98,7 +94,6 @@
   }
   .trust svg { width: 1.15rem; height: 1.15rem; color: var(--secondary-accent-color); }
 
-  /* Step cards */
   .card {
     margin-bottom: 0.75rem; padding: 1.5rem;
     border-radius: 1rem; background: var(--card-color);
@@ -123,7 +118,6 @@
   .card.is-done .badge svg { display: block; }
   .optional { font-size: 0.75rem; font-weight: 600; color: var(--text-faint); margin-left: 0.35rem; }
 
-  /* Forms */
   .field { position: relative; margin-bottom: 0.75rem; }
   .field label { display: block; margin-bottom: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--text-dim); }
   .field .icon {
@@ -154,7 +148,6 @@
   .reveal[aria-pressed="true"] .eye { display: none; }
   .reveal[aria-pressed="true"] .eye-off { display: block; }
 
-  /* Buttons */
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
     min-height: 3.5rem; padding: 0 1.75rem; border: 0; border-radius: 3.5rem;
@@ -192,7 +185,6 @@
   .form-foot a { color: var(--text-dim); text-underline-offset: 3px; text-decoration-color: var(--overlay-strong); font-weight: 600; }
   .form-foot a:hover { color: var(--primary-foreground-color); }
 
-  /* Messages */
   .msg { display: flex; gap: 0.5rem; align-items: flex-start; margin: 0.9rem 0 0; font-size: 0.92rem; }
   .msg:empty { display: none; }
   .msg svg { width: 1.1rem; height: 1.1rem; margin-top: 0.15rem; }
@@ -203,12 +195,11 @@
   .help summary:hover { color: var(--primary-foreground-color); }
   .help p { margin: 0.6rem 0 0; color: var(--text-dim); }
 
-  /* Signed-in summary */
   .account { margin: 0; color: var(--text-dim); font-size: 0.95rem; }
   .account strong { color: var(--primary-foreground-color); font-weight: 600; word-break: break-all; }
   .account .link-btn { margin-left: 0.5rem; }
   .meta { margin: 0.35rem 0 0; color: var(--text-faint); font-size: 0.875rem; }
-  /* Padding leaves room for the hover lift inside the scroll area */
+  /* Padding gives the hover lift room inside the scroll area */
   .posters {
     display: flex; gap: 0.6rem; margin: 0.5rem -0.4rem 0; padding: 0.55rem 0.4rem 0.6rem;
     overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: 0.4rem;
@@ -251,6 +242,8 @@
   .check summary::-webkit-details-marker { display: none; }
   .check summary:hover { color: var(--primary-foreground-color); }
   .check ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .check > ul { padding: 0.85rem 1rem 0.85rem 2.1rem; border-radius: var(--border-radius); background: var(--overlay-color); }
+  .check > ul > li:last-child { margin-bottom: 0; }
   .check li { margin-bottom: 0.3rem; }
   .check li ul { margin-top: 0.2rem; color: var(--text-faint); }
 
@@ -261,7 +254,6 @@
   .skip-line { margin: 0.9rem 0 0; text-align: center; font-size: 0.875rem; }
   .card.is-skipped .badge { background: var(--overlay-strong); color: var(--text-dim); }
 
-  /* Copy step */
   .options { display: grid; gap: 0.9rem; }
   .option { display: flex; gap: 0.8rem; align-items: flex-start; cursor: pointer; }
   .option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
@@ -332,7 +324,6 @@
       <p class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Your details go straight to Stremio and nowhere else.</p>
     </section>
 
-    <!-- Step 1: old account -->
     <section class="card" id="card-source" aria-labelledby="source-title">
       <header class="card-head">
         <span class="badge" aria-hidden="true"><span>1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
@@ -375,7 +366,6 @@
       </div>
     </section>
 
-    <!-- Step 2: backup -->
     <section class="card" id="card-backup" aria-labelledby="backup-title">
       <header class="card-head">
         <span class="badge" aria-hidden="true"><span>2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
@@ -396,7 +386,6 @@
       </div>
     </section>
 
-    <!-- Step 3: new account -->
     <section class="card" id="card-dest" aria-labelledby="dest-title">
       <header class="card-head">
         <span class="badge" aria-hidden="true"><span>3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
@@ -436,7 +425,6 @@
       </div>
     </section>
 
-    <!-- Step 4: copy -->
     <section class="card" id="card-migrate" aria-labelledby="migrate-title">
       <header class="card-head">
         <span class="badge" aria-hidden="true"><span>4</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
@@ -503,7 +491,7 @@
       alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></svg>',
     };
 
-    // ---------- Stremio API ----------
+    // Stremio API
 
     class FriendlyError extends Error {
       constructor(message, kind) {
@@ -578,8 +566,7 @@
       },
     };
 
-    // ---------- Library checks and repairs ----------
-    // Rules follow stremio-core's LibraryItem: one bad item can stop the whole library from loading.
+    // Library checks
 
     function isValidDate(value) {
       return typeof value === 'string' && value !== '' && !Number.isNaN(Date.parse(value));
@@ -605,6 +592,7 @@
       return typeof videoId === 'string' && videoId.split(':').length >= 3 ? 'series' : 'movie';
     }
 
+    // Stremio apps drop the whole library if one item breaks these rules
     function repairItem(raw, report) {
       const item = { ...raw };
       const fixes = [];
@@ -710,8 +698,6 @@
       return { inLibrary, history: items.length - inLibrary };
     }
 
-    // ---------- Backup files ----------
-
     function backupFileName() {
       const now = new Date();
       const pad = (n) => String(n).padStart(2, '0');
@@ -733,14 +719,14 @@
       return { items, addons, account };
     }
 
-    // ---------- State ----------
+    // State
 
     const state = {
-      source: null, // { kind, authKey, userId, email, fileName, rawItems, rawAddons, items, addons, report, skippedAddons }
+      source: null,
       backupName: null,
       backupSkipped: false,
-      pendingRepair: false, // Fix in this account waits for the backup step
-      dest: null, // { authKey, userId, email, items, addons }
+      pendingRepair: false,
+      dest: null,
       options: { library: true, addons: true },
       busy: false,
       result: null,
@@ -752,7 +738,7 @@
       return !!a.email && !!b.email && a.email.toLowerCase() === b.email.toLowerCase();
     }
 
-    // Same account on both sides: rewrite damaged titles in place
+    // Same account on both sides means repair in place
     function isRepairMode() {
       return isSameAccount(state.source, state.dest);
     }
@@ -763,7 +749,7 @@
       const repair = isRepairMode();
       const stamp = new Date().toISOString();
 
-      // Newest copy per ID, so stored duplicates don't look like pending updates
+      // Compare with the newest copy when an ID is stored twice
       const destById = new Map();
       for (const item of dest.items.filter(isPlainObject)) {
         const existing = destById.get(item._id);
@@ -780,7 +766,7 @@
           changes.push(item);
           added++;
         } else if (repair && source.report.brokenIds.has(item._id)) {
-          // Newer mtime makes Stremio apps pull the fixed copy. Duplicates alone can't be fixed by a rewrite
+          // A newer _mtime makes Stremio apps replace their cached copy
           changes.push({ ...item, _mtime: stamp });
           fixed++;
         } else if (timeOf(item._mtime) > timeOf(existing._mtime)) {
@@ -795,7 +781,7 @@
       const destUrls = new Set(cleanDest.addons.map((addon) => addon.transportUrl));
       const sourceUrls = new Set(source.addons.map((addon) => addon.transportUrl));
       const newAddons = source.addons.filter((addon) => !destUrls.has(addon.transportUrl)).length;
-      // Old account order first, then anything only the new account has
+      // Keep the old addon order, then add extras from the new account
       const merged = [...source.addons, ...cleanDest.addons.filter((addon) => !sourceUrls.has(addon.transportUrl))];
 
       return {
@@ -809,7 +795,7 @@
       return `${n.toLocaleString()} ${n === 1 ? one : (many || `${one}s`)}`;
     }
 
-    // ---------- DOM helpers ----------
+    // Rendering
 
     const $ = (id) => document.getElementById(id);
 
@@ -944,20 +930,17 @@
         container.append(list);
       }
 
-      // Offer an in-place repair when the old account itself is damaged
       if (source.kind === 'account' && report.brokenIds.size && !state.dest) {
         line.append(linkButton('Fix in this account', useSourceAsDest));
       }
     }
-
-    // ---------- Rendering ----------
 
     function backupHandled() {
       const { source } = state;
       return !!source && (source.kind === 'file' || !!state.backupName || state.backupSkipped);
     }
 
-    // Steps unlock in order. The backup step must be saved or skipped first
+    // Each step unlocks when the previous one is done. A skipped backup counts as done
     function renderSteps() {
       const backup = backupHandled();
       const done = {
@@ -1021,7 +1004,6 @@
       return (state.options.library ? plan.library.changes.length : 0) + (state.options.addons && plan.addons.write ? 1 : 0);
     }
 
-    // Reason the copy can't run yet, once both accounts are ready
     function planBlocker(plan) {
       if (!plan) return 'locked';
       if (!state.options.library && !state.options.addons) return 'Choose something to copy';
@@ -1050,7 +1032,6 @@
     function renderPlanNote(plan) {
       const note = $('plan-note');
       note.replaceChildren();
-      // Only a repair writes to the old account, so only then is a backup pressing
       const needsBackup = plan.repair && plannedWork(plan) > 0 && state.source.kind !== 'file' && !state.backupName;
       note.className = needsBackup ? 'note is-warn' : 'note';
       if (needsBackup) {
@@ -1076,7 +1057,6 @@
         renderPlanNote(plan);
       }
 
-      // When there is nothing to do, the disabled button says why
       const button = $('migrate');
       button.disabled = !!blocker || state.busy;
       button.hidden = state.busy || finished;
@@ -1118,7 +1098,6 @@
         return;
       }
 
-      // Card badge already shows success, so no heading here
       const summary = el('p');
       if (result.repair) {
         summary.append(el('strong', '', count(result.verifiedTitles || 0, 'title')), ' fixed and verified. Restart Stremio on your devices to reload the library.');
@@ -1147,7 +1126,7 @@
       if (target) target.focus({ preventScroll: true });
     }
 
-    // ---------- Actions ----------
+    // Actions
 
     function readCredentials(prefix) {
       const emailInput = $(`${prefix}-email`);
@@ -1251,7 +1230,7 @@
 
     function changeSource() {
       if (state.busy) return;
-      // A shared session means step 3 used this same sign-in
+      // Repair mode shares this session, so clear step 3 too
       if (state.dest && state.source && state.dest.authKey === state.source.authKey) state.dest = null;
       if (state.source && state.source.authKey) stremio.logout(state.source.authKey);
       state.source = null;
@@ -1311,7 +1290,6 @@
       advanceFromBackup(true, 'backup-late');
     }
 
-    // Move on to the next step the first time the backup step is handled
     function advanceFromBackup(firstTime, focusId) {
       if (state.pendingRepair) return useSourceAsDest();
       render();
@@ -1405,6 +1383,7 @@
           doneSteps += WRITE_BATCH_SIZE;
         }
 
+        // Read the account back to confirm each item arrived
         setProgress('Verifying', doneSteps / totalSteps);
         const [destItems, destAddons] = await Promise.all([stremio.getLibrary(dest.authKey), stremio.getAddons(dest.authKey)]);
         dest.items = destItems;
@@ -1420,7 +1399,7 @@
         let verifiedTitles = checkTitles ? source.items.length - missingTitles : null;
 
         if (plan.repair) {
-          // Titles written in place must now pass the same checks
+          // Rewritten titles must now pass the same checks
           const recheck = repairLibrary(destItems).report.brokenIds;
           const stillBroken = changes.filter((item) => recheck.has(item._id)).length;
           missingTitles += stillBroken;
@@ -1428,7 +1407,6 @@
         }
         state.result = { ok: !missingTitles && !missingAddons, repair: plan.repair, verifiedTitles, verifiedAddons: checkAddons ? source.addons.length - missingAddons : null, missingTitles, missingAddons };
         if (plan.repair && state.result.ok && source.kind === 'account') {
-          // Reflect the repaired account in step 1
           const { backupName, backupSkipped, result } = state;
           loadSource({ ...source, rawItems: destItems, rawAddons: destAddons });
           state.backupName = backupName;
@@ -1443,8 +1421,6 @@
         $('migrate-result').focus();
       }
     }
-
-    // ---------- Wiring ----------
 
     function wireRevealButtons() {
       for (const button of document.querySelectorAll('.reveal')) {
