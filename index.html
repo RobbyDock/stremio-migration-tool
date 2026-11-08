@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-/ZKJDeaUEmjdJevb/sOJlEUZJLrUPyP08lMp3mBxhK0='; style-src 'unsafe-inline'; img-src https: data:; font-src data:; connect-src https://api.strem.io; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SF/fb/J0qyTnV1oO4INHTnO5wZEHRbmkvrkxQpZS2FI='; style-src 'unsafe-inline'; img-src https: data:; font-src data:; connect-src https://api.strem.io; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0c0b11">
@@ -209,6 +209,7 @@
   .account strong { color: var(--primary-foreground-color); font-weight: 600; word-break: break-all; }
   .account .link-btn { margin-left: 0.5rem; }
   .meta { margin: 0.35rem 0 0; color: var(--text-faint); font-size: 0.875rem; }
+  .meta .link-btn { margin-left: 0.6rem; }
   /* Padding gives the hover lift room inside the scroll area */
   .posters {
     display: flex; gap: 0.6rem; margin: 0.5rem -0.4rem 0; padding: 0.55rem 0.4rem 0.6rem;
@@ -369,7 +370,7 @@
 
         <div id="source-summary" hidden>
           <p class="account"><span id="source-kind"></span> <strong id="source-name"></strong><button class="link-btn" type="button" id="source-change">Change</button></p>
-          <p class="meta" id="source-stats"></p>
+          <p class="meta"><span id="source-stats"></span><button class="link-btn" type="button" id="source-csv">Download as CSV</button></p>
           <div class="posters" id="source-posters" aria-label="Recently watched titles"></div>
           <div class="check" id="source-check"></div>
         </div>
@@ -708,25 +709,62 @@
       return { inLibrary, history: items.length - inLibrary };
     }
 
-    function backupFileName() {
+    function datedFileName(prefix, extension) {
       const now = new Date();
       const pad = (n) => String(n).padStart(2, '0');
-      return `stremio-backup-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.json`;
+      return `${prefix}-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.${extension}`;
+    }
+
+    // Stremio's own data export wraps each library item in { d: item } and nests addons one level down
+    function parseStremioExport(data) {
+      const items = data.library.map((entry) => (isPlainObject(entry) && isPlainObject(entry.d) ? entry.d : entry));
+      const addonList = isPlainObject(data.addons) && Array.isArray(data.addons.addons) ? data.addons.addons : [];
+      const addons = addonList.filter(isPlainObject);
+      const account = typeof data.user === 'string' ? { id: data.user } : null;
+      return { items, addons, account };
     }
 
     function parseBackup(text) {
+      const notBackup = () => new FriendlyError('Not a backup file from this tool or a Stremio data export.', 'file');
       let data;
       try {
         data = JSON.parse(text);
       } catch {
-        throw new FriendlyError('Not a backup file from this tool.', 'file');
+        throw notBackup();
       }
-      const items = Array.isArray(data) ? data : (isPlainObject(data) ? data.items : null);
-      const addons = isPlainObject(data) && Array.isArray(data.addons) ? data.addons : [];
-      if (!Array.isArray(items)) throw new FriendlyError('Not a backup file from this tool.', 'file');
-      if (!items.length && !addons.length) throw new FriendlyError('This backup is empty.', 'file');
-      const account = isPlainObject(data) && isPlainObject(data.account) ? data.account : null;
-      return { items, addons, account };
+      let backup;
+      if (isPlainObject(data) && Array.isArray(data.library)) {
+        backup = parseStremioExport(data);
+      } else {
+        const items = Array.isArray(data) ? data : (isPlainObject(data) ? data.items : null);
+        if (!Array.isArray(items)) throw notBackup();
+        backup = {
+          items,
+          addons: isPlainObject(data) && Array.isArray(data.addons) ? data.addons : [],
+          account: isPlainObject(data) && isPlainObject(data.account) ? data.account : null,
+        };
+      }
+      if (!backup.items.length && !backup.addons.length) throw new FriendlyError('This backup is empty.', 'file');
+      return backup;
+    }
+
+    function csvCell(value) {
+      let text = value == null ? '' : String(value);
+      // Stop spreadsheet apps from running a title as a formula
+      if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+      return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    }
+
+    function libraryCsv(items) {
+      const rows = [['Title', 'Type', 'Year', 'ID', 'In library', 'Watched', 'Last watched']];
+      for (const item of items) {
+        if (!isPlainObject(item)) continue;
+        const itemState = isPlainObject(item.state) ? item.state : {};
+        const watched = Number(itemState.flaggedWatched) > 0 || Number(itemState.timesWatched) > 0;
+        const lastWatched = isValidDate(itemState.lastWatched) ? new Date(itemState.lastWatched).toISOString().slice(0, 10) : '';
+        rows.push([item.name, item.type, item.year, item._id, item.removed || item.temp ? 'No' : 'Yes', watched ? 'Yes' : 'No', lastWatched]);
+      }
+      return '﻿' + rows.map((row) => row.map(csvCell).join(',')).join('\r\n') + '\r\n';
     }
 
     // State
@@ -1269,6 +1307,22 @@
       focusStep('migrate');
     }
 
+    function saveFile(name, content, type) {
+      const url = URL.createObjectURL(new Blob([content], { type }));
+      const link = el('a');
+      link.href = url;
+      link.download = name;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }
+
+    function downloadCsv() {
+      if (!state.source) return;
+      saveFile(datedFileName('stremio-library', 'csv'), libraryCsv(state.source.items), 'text/csv;charset=utf-8');
+    }
+
     function downloadBackup() {
       const { source } = state;
       if (!source) return;
@@ -1280,15 +1334,8 @@
         items: source.rawItems,
         addons: source.rawAddons,
       };
-      const name = backupFileName();
-      const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
-      const link = el('a');
-      link.href = url;
-      link.download = name;
-      document.body.append(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      const name = datedFileName('stremio-backup', 'json');
+      saveFile(name, JSON.stringify(payload, null, 2), 'application/json');
       const firstTime = !backupHandled();
       state.backupName = name;
       state.backupSkipped = false;
@@ -1461,6 +1508,7 @@
     $('source-file-button').addEventListener('click', () => $('source-file').click());
     $('source-file').addEventListener('change', loadSourceFile);
     $('source-change').addEventListener('click', changeSource);
+    $('source-csv').addEventListener('click', downloadCsv);
     $('backup-download').addEventListener('click', downloadBackup);
     $('backup-again').addEventListener('click', downloadBackup);
     $('backup-skip').addEventListener('click', skipBackup);
