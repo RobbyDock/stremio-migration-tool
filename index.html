@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SF/fb/J0qyTnV1oO4INHTnO5wZEHRbmkvrkxQpZS2FI='; style-src 'unsafe-inline'; img-src https: data:; font-src data:; connect-src https://api.strem.io; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-o9iXCc9j78w9RmrVZWkftJ8zkhDFCY/j1Halo1sSf6g='; style-src 'unsafe-inline'; img-src https: data:; font-src data:; connect-src https://api.strem.io; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0c0b11">
@@ -247,6 +247,7 @@
   .check-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.75rem; }
   .check-line > span { display: inline-flex; align-items: center; gap: 0.45rem; }
   .check-line svg { width: 1.05rem; height: 1.05rem; }
+  .check-warn { margin: 0 0 0.6rem; color: var(--tertiary-accent-color); }
   .check.is-ok svg { color: var(--secondary-accent-color); }
   .check.is-fixed svg { color: var(--primary-accent-color); }
   .check summary { cursor: pointer; list-style: none; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--overlay-strong); }
@@ -720,8 +721,14 @@
       const items = data.library.map((entry) => (isPlainObject(entry) && isPlainObject(entry.d) ? entry.d : entry));
       const addonList = isPlainObject(data.addons) && Array.isArray(data.addons.addons) ? data.addons.addons : [];
       const addons = addonList.filter(isPlainObject);
-      const account = typeof data.user === 'string' ? { id: data.user } : null;
-      return { items, addons, account };
+      const user = isPlainObject(data.user) ? data.user : null;
+      const account = user ? { id: user._id || null, email: user.email || null } : (typeof data.user === 'string' ? { id: data.user } : null);
+      // Stremio's export has a known bug that repeats one entry in place of the whole library
+      const ids = new Set(items.map((item) => (isPlainObject(item) ? item._id : null)));
+      const warning = items.length > 1 && ids.size === 1
+        ? `This Stremio export is damaged: it lists the same title ${items.length.toLocaleString()} times instead of your library. Your addons can still be copied. To copy your library, sign in with your old account instead.`
+        : null;
+      return { items, addons, account, warning };
     }
 
     function parseBackup(text) {
@@ -959,6 +966,7 @@
       summary.insertAdjacentHTML('beforeend', anyIssue ? ICONS.wrench : ICONS.check);
       summary.append(anyIssue ? parts.join(' ') : 'No problems found.');
       line.append(summary);
+      if (source.fileWarning) container.append(el('p', 'check-warn', source.fileWarning));
       container.append(line);
 
       if (groups.length) {
@@ -1263,6 +1271,7 @@
           fileName: file.name,
           rawItems: backup.items,
           rawAddons: backup.addons,
+          fileWarning: backup.warning || null,
         });
         render();
         $('source-change').focus();
