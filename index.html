@@ -2,467 +2,1496 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Stremio Library & Addon Migration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0c0b11">
+<meta name="description" content="Copy your Stremio library, watch progress and addons from one account to another. Runs entirely in your browser.">
+<title>Stremio Library Migration</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Tokens match Stremio's web app */
   :root {
-    --bg: #0c0b11;
-    --panel: #17141f;
-    --panel-border: rgba(255,255,255,0.07);
-    --field: #211d2e;
-    --field-border: rgba(255,255,255,0.09);
-    --text: #f2f0f7;
-    --text-dim: rgba(242,240,247,0.55);
-    --text-faint: rgba(242,240,247,0.35);
-    --purple: #6c5dd3;
-    --purple-hi: #8577e0;
-    --green: #6dbb00;
-    --green-hi: #7fd400;
-    --error: #ff5470;
+    --primary-background-color: #0c0b11;
+    --secondary-background-color: #1a173e;
+    --modal-background-color: #0f0d20;
+    --primary-accent-color: #7b5bf5;
+    --secondary-accent-color: #22b365;
+    --tertiary-accent-color: #f6c700;
+    --quaternary-accent-color: #1245a6;
+    --primary-foreground-color: rgba(255, 255, 255, 0.9);
+    --secondary-foreground-color: #0c0b11;
+    --overlay-color: rgba(255, 255, 255, 0.05);
+    --overlay-strong: rgba(255, 255, 255, 0.1);
+    --text-dim: rgba(255, 255, 255, 0.65);
+    --text-faint: rgba(255, 255, 255, 0.5);
+    --card-color: rgba(15, 13, 32, 0.72);
+    --border-radius: 0.75rem;
+    --focus-outline-size: 2px;
+    --poster-shape-ratio: 1.464;
     color-scheme: dark;
   }
+
   * { box-sizing: border-box; }
-  html { background: var(--bg); }
+  html { background: var(--primary-background-color); -webkit-text-size-adjust: 100%; }
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     margin: 0;
-    color: var(--text);
-    background: radial-gradient(1200px 500px at 50% -100px, #201a35 0%, var(--bg) 60%) var(--bg);
     min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--primary-foreground-color);
+    overflow-x: hidden;
   }
-  button, input, a { font-family: inherit; }
-  :focus-visible { outline: 2px solid var(--purple-hi); outline-offset: 2px; }
+  /* Blurred colour fields, same idea as Stremio's sign-in screen */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: -4rem;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(45% 38% at 8% 95%, rgba(123, 91, 245, 0.5), transparent 70%),
+      radial-gradient(45% 36% at 95% 4%, rgba(18, 69, 166, 0.55), transparent 70%);
+    filter: blur(48px);
+  }
+  button, input, a, summary { font: inherit; color: inherit; }
+  a { color: var(--primary-foreground-color); }
+  :focus-visible { outline: var(--focus-outline-size) solid var(--primary-foreground-color); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  svg { flex: none; }
 
-  .topbar { width: 100%; background: var(--panel); border-bottom: 1px solid var(--panel-border); }
+  /* Top bar */
   .topbar-inner {
-    max-width: 640px; margin: 0 auto; padding: 14px 20px;
-    display: flex; align-items: center; gap: 10px;
+    max-width: 40rem; margin: 0 auto; padding: 1.25rem 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
   }
-  .topbar-inner img { width: 30px; height: 30px; border-radius: 8px; flex: none; }
-  .topbar-inner .name { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; }
-  .topbar-inner .name .dim { color: var(--text-dim); font-weight: 500; margin-left: 4px; }
-
-  .container { max-width: 640px; margin: 0 auto; padding: 28px 20px 64px; }
-  .lede { color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; margin: 0 0 24px; }
-
-  .panel {
-    border: 1px solid var(--panel-border);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    background: var(--panel);
-    transition: border-color 0.15s ease;
+  /* Logo lockup: symbol, wordmark, divider, product name */
+  .brand { display: flex; align-items: center; min-width: 0; }
+  .brand-mark { width: 2rem; height: 2rem; flex: none; }
+  .wordmark { flex: none; height: 1rem; width: auto; margin-left: 0.6rem; opacity: 0.92; }
+  .brand-divider { flex: none; width: 1px; height: 1.25rem; margin: 0 0.85rem; background: rgba(255, 255, 255, 0.2); }
+  .brand-name { font-size: 0.95rem; font-weight: 500; letter-spacing: 0.01em; color: var(--text-dim); white-space: nowrap; }
+  .topbar-link {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.8rem; border-radius: 2rem;
+    font-size: 0.875rem; font-weight: 600; text-decoration: none; color: var(--text-dim);
   }
-  .panel:hover { border-color: rgba(255,255,255,0.12); }
-  .panel h2 { margin: 0 0 2px; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-  .panel h2 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); flex: none; }
-  .panel .sub { margin: 0 0 16px; font-size: 0.78rem; color: var(--text-faint); }
+  .topbar-link:hover { color: var(--primary-foreground-color); background: var(--overlay-color); }
+  .topbar-link svg { width: 1.15rem; height: 1.15rem; }
 
-  label { display: block; margin: 12px 0 6px; font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
-  label:first-of-type { margin-top: 0; }
+  /* Page */
+  main { max-width: 40rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  .hero { text-align: center; margin-bottom: 2.25rem; }
+  .hero h1 {
+    margin: 0 0 0.75rem; font-size: clamp(1.7rem, 5vw, 2.4rem);
+    font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance;
+  }
+  .hero p { margin: 0 auto; max-width: 30rem; color: var(--text-dim); text-wrap: balance; }
+  .trust {
+    display: flex; align-items: center; gap: 0.6rem; width: fit-content; max-width: 100%;
+    margin: 1.25rem auto 0 !important; padding: 0.75rem 1.1rem; text-align: left;
+    border-radius: var(--border-radius); background: var(--overlay-color);
+    font-size: 0.9rem;
+  }
+  .trust svg { width: 1.15rem; height: 1.15rem; color: var(--secondary-accent-color); }
 
-  .field { position: relative; }
-  .field svg {
-    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-    width: 16px; height: 16px; color: var(--text-faint); pointer-events: none;
+  /* Step cards */
+  .card {
+    margin-bottom: 0.75rem; padding: 1.5rem;
+    border-radius: 1rem; background: var(--card-color);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    transition: opacity 0.2s ease;
   }
-  input[type="email"], input[type="password"] {
-    width: 100%; padding: 11px 14px 11px 38px; box-sizing: border-box;
-    background: var(--field); border: 1px solid var(--field-border); border-radius: 10px;
-    color: var(--text); font-size: 0.9rem;
-    transition: border-color 0.15s ease, background 0.15s ease;
+  .card.is-locked { opacity: 0.4; }
+  .card-head { display: flex; align-items: center; gap: 0.85rem; }
+  .card-head h2 { margin: 0; font-size: 1.1rem; font-weight: 600; line-height: 1.3; }
+  .card-sub { margin: 0.1rem 0 0; font-size: 0.875rem; color: var(--text-dim); }
+  .card-body { margin-top: 1.25rem; }
+  .card-body:empty { display: none; }
+  .badge {
+    flex: none; width: 1.75rem; height: 1.75rem; border-radius: 50%;
+    display: grid; place-items: center; font-size: 0.8rem; font-weight: 700;
+    background: var(--overlay-strong); color: var(--text-dim);
   }
-  input[type="email"]:hover, input[type="password"]:hover { border-color: rgba(255,255,255,0.18); }
-  input[type="email"]:focus, input[type="password"]:focus {
-    outline: none; border-color: var(--purple); background: #241f33;
-  }
-  input::placeholder { color: var(--text-faint); }
+  .badge svg { width: 0.9rem; height: 0.9rem; display: none; }
+  .card.is-current .badge { background: var(--primary-accent-color); color: #fff; }
+  .card.is-done .badge { background: var(--secondary-accent-color); color: #fff; }
+  .card.is-done .badge span { display: none; }
+  .card.is-done .badge svg { display: block; }
+  .optional { font-size: 0.75rem; font-weight: 600; color: var(--text-faint); margin-left: 0.35rem; }
 
-  button, .file-label {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    margin-top: 14px; padding: 11px 20px; cursor: pointer;
-    border: none; border-radius: 999px; font-size: 0.88rem; font-weight: 600;
-    background: var(--purple); color: #fff;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  /* Forms */
+  .field { position: relative; margin-bottom: 0.75rem; }
+  .field label { display: block; margin-bottom: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--text-dim); }
+  .field .icon {
+    position: absolute; left: 1rem; bottom: 1.05rem; width: 1.15rem; height: 1.15rem;
+    color: var(--text-faint); pointer-events: none;
   }
-  button svg, .file-label svg { width: 16px; height: 16px; flex: none; }
-  button:hover:not(:disabled) { background: var(--purple-hi); }
-  button:active:not(:disabled) { transform: scale(0.98); }
-  button:disabled { cursor: not-allowed; opacity: 0.4; }
-
-  .action-row { display: flex; gap: 10px; margin-top: 14px; }
-  .action-row button, .action-row .file-label { flex: 1; margin: 0; }
-  .file-label {
-    background: transparent; border: 1px solid var(--field-border); color: var(--text-dim);
+  .input {
+    display: block; width: 100%; padding: 1rem 1rem 1rem 3rem;
+    border: 0; border-radius: var(--border-radius);
+    background: var(--overlay-color); color: var(--primary-foreground-color);
+    font-size: 1rem;
+    outline: var(--focus-outline-size) solid transparent; outline-offset: calc(-1 * var(--focus-outline-size));
+    transition: outline-color 0.15s ease, background 0.15s ease;
   }
-  .file-label:hover { border-color: var(--purple); color: var(--text); }
-  input[type="file"] {
-    position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip: rect(0,0,0,0); white-space: nowrap;
+  .input::placeholder { color: var(--text-faint); }
+  .input:hover { outline-color: var(--overlay-strong); }
+  .input:focus, .input:focus-visible { outline-color: var(--primary-accent-color); background: rgba(255, 255, 255, 0.07); }
+  .input[aria-invalid="true"] { outline-color: var(--tertiary-accent-color); }
+  .input.has-toggle { padding-right: 3.5rem; }
+  .reveal {
+    position: absolute; right: 0.4rem; bottom: 0.4rem; width: 2.6rem; height: 2.6rem;
+    display: grid; place-items: center; border: 0; border-radius: 50%;
+    background: transparent; color: var(--text-faint); cursor: pointer;
   }
+  .reveal:hover { color: var(--primary-foreground-color); background: var(--overlay-color); }
+  .reveal svg { width: 1.2rem; height: 1.2rem; }
+  .reveal .eye-off { display: none; }
+  .reveal[aria-pressed="true"] .eye { display: none; }
+  .reveal[aria-pressed="true"] .eye-off { display: block; }
 
-  .status { margin-top: 12px; font-size: 0.85rem; white-space: pre-wrap; line-height: 1.5; }
-  .status:empty { display: none; }
-  .status.error { color: var(--error); }
-  .status.ok { color: var(--green); }
-
-  #migrate {
-    width: 100%; font-size: 0.98rem; font-weight: 700; padding: 14px 22px;
-    background: var(--green);
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+    min-height: 3.5rem; padding: 0 1.75rem; border: 0; border-radius: 3.5rem;
+    font-size: 1.05rem; font-weight: 700; text-decoration: none; cursor: pointer;
+    background: var(--primary-accent-color); color: #fff;
+    outline: var(--focus-outline-size) solid transparent;
+    transition: background 0.15s ease, color 0.15s ease, outline-color 0.15s ease, transform 0.1s ease;
   }
-  #migrate:hover:not(:disabled) { background: var(--green-hi); }
-  #migrate-status { text-align: center; }
-  .hint { font-size: 0.78rem; color: var(--text-faint); text-align: center; margin: 10px 0 0; }
-
-  a.backup {
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-top: 10px; font-size: 0.82rem;
-    color: var(--purple-hi); text-decoration: none; font-weight: 600;
+  .btn svg { width: 1.25rem; height: 1.25rem; }
+  .btn:hover:not(:disabled) { background: var(--primary-foreground-color); color: var(--secondary-foreground-color); }
+  .btn:active:not(:disabled) { transform: scale(0.98); }
+  .btn:focus-visible { outline-color: var(--primary-foreground-color); outline-offset: 2px; }
+  .btn:disabled { cursor: not-allowed; opacity: 0.45; }
+  .btn-block { display: flex; width: 100%; }
+  .btn-success { background: var(--secondary-accent-color); }
+  #migrate:disabled svg { display: none; }
+  .btn-ghost { background: transparent; outline-color: var(--overlay-strong); outline-offset: calc(-1 * var(--focus-outline-size)); }
+  .btn-ghost:hover:not(:disabled) { background: var(--overlay-color); color: var(--primary-foreground-color); outline-color: var(--primary-foreground-color); }
+  .link-btn {
+    padding: 0; border: 0; background: none; cursor: pointer;
+    font-size: inherit; font-weight: 600; color: var(--text-dim);
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--overlay-strong);
   }
-  a.backup svg { width: 14px; height: 14px; }
-  a.backup:hover { color: var(--text); text-decoration: underline; }
+  .link-btn:hover { color: var(--primary-foreground-color); text-decoration-color: currentColor; }
+  .spinner {
+    width: 1.15rem; height: 1.15rem; border-radius: 50%;
+    border: 2.5px solid currentColor; border-right-color: transparent;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  pre.report {
-    font-size: 0.75rem; max-height: 220px; overflow: auto;
-    background: #0c0a14; border: 1px solid var(--panel-border);
-    padding: 10px 12px; border-radius: 10px; margin-top: 10px; color: var(--text-dim);
+  .form-actions { display: grid; gap: 0.75rem; margin-top: 1rem; }
+  .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .form-foot { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; margin-top: 1.1rem; font-size: 0.875rem; text-align: center; color: var(--text-dim); }
+  .form-foot a { color: var(--text-dim); text-underline-offset: 3px; text-decoration-color: var(--overlay-strong); font-weight: 600; }
+  .form-foot a:hover { color: var(--primary-foreground-color); }
+
+  /* Messages */
+  .msg { display: flex; gap: 0.5rem; align-items: flex-start; margin: 0.9rem 0 0; font-size: 0.92rem; }
+  .msg:empty { display: none; }
+  .msg svg { width: 1.1rem; height: 1.1rem; margin-top: 0.15rem; }
+  .msg.is-error { color: var(--tertiary-accent-color); }
+  .msg.is-busy { color: var(--text-dim); }
+  .help summary { cursor: pointer; list-style: none; font-weight: 600; color: var(--text-dim); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--overlay-strong); }
+  .help summary::-webkit-details-marker { display: none; }
+  .help summary:hover { color: var(--primary-foreground-color); }
+  .help p { margin: 0.6rem 0 0; color: var(--text-dim); }
+
+  /* Signed-in summary */
+  .account { margin: 0; color: var(--text-dim); font-size: 0.95rem; }
+  .account strong { color: var(--primary-foreground-color); font-weight: 600; word-break: break-all; }
+  .account .link-btn { margin-left: 0.5rem; }
+  .meta { margin: 0.35rem 0 0; color: var(--text-faint); font-size: 0.875rem; }
+  /* Padding leaves room for the hover lift inside the scroll area */
+  .posters {
+    display: flex; gap: 0.6rem; margin: 0.5rem -0.4rem 0; padding: 0.55rem 0.4rem 0.6rem;
+    overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: 0.4rem;
+  }
+  .posters::-webkit-scrollbar { height: 6px; }
+  .posters::-webkit-scrollbar-track { background: transparent; }
+  .posters::-webkit-scrollbar-thumb { border-radius: 6px; background: rgba(255, 255, 255, 0.12); }
+  .posters:hover::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.28); }
+  @supports (-moz-appearance: none) {
+    .posters { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.2) transparent; }
+  }
+  .posters:empty { display: none; }
+  .poster {
+    position: relative; flex: none; width: 4.75rem; aspect-ratio: 1 / var(--poster-shape-ratio);
+    border-radius: var(--border-radius); overflow: hidden; scroll-snap-align: start;
+    background: linear-gradient(160deg, var(--secondary-background-color), var(--modal-background-color));
+    display: grid; place-items: center; text-align: center;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  }
+  .poster:hover { transform: translateY(-3px) scale(1.07); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); }
+  .poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .poster > span { padding: 0.4rem; font-size: 0.65rem; font-weight: 600; color: var(--text-dim); overflow: hidden; }
+  .poster .poster-title {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 1.5rem 0.45rem 0.45rem;
+    background: linear-gradient(to top, rgba(12, 11, 17, 0.95), rgba(12, 11, 17, 0.6) 60%, transparent);
+    font-size: 0.62rem; font-weight: 600; line-height: 1.25; text-align: left; color: #fff;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    opacity: 0; transform: translateY(0.4rem);
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .poster:hover .poster-title { opacity: 1; transform: none; }
+
+  .check { margin-top: 0.9rem; font-size: 0.9rem; color: var(--text-dim); }
+  .check-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.75rem; }
+  .check-line > span { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .check-line svg { width: 1.05rem; height: 1.05rem; }
+  .check.is-ok svg { color: var(--secondary-accent-color); }
+  .check.is-fixed svg { color: var(--primary-accent-color); }
+  .check summary { cursor: pointer; list-style: none; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--overlay-strong); }
+  .check summary::-webkit-details-marker { display: none; }
+  .check summary:hover { color: var(--primary-foreground-color); }
+  .check ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .check li { margin-bottom: 0.3rem; }
+  .check li ul { margin-top: 0.2rem; color: var(--text-faint); }
+
+  .done-line { display: flex; flex-wrap: wrap; gap: 0.45rem 0.75rem; align-items: center; margin: 0; font-size: 0.95rem; color: var(--text-dim); }
+  .done-line > span { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .done-line svg { width: 1.1rem; height: 1.1rem; color: var(--secondary-accent-color); }
+  .done-line strong { color: var(--primary-foreground-color); font-weight: 600; }
+  .skip-line { margin: 0.9rem 0 0; text-align: center; font-size: 0.875rem; }
+  .card.is-skipped .badge { background: var(--overlay-strong); color: var(--text-dim); }
+
+  /* Copy step */
+  .options { display: grid; gap: 0.9rem; }
+  .option { display: flex; gap: 0.8rem; align-items: flex-start; cursor: pointer; }
+  .option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .tick {
+    flex: none; width: 1.35rem; height: 1.35rem; margin-top: 0.1rem; border-radius: 0.4rem;
+    display: grid; place-items: center; background: var(--overlay-strong); color: transparent;
+    transition: background 0.15s ease;
+  }
+  .tick svg { width: 0.9rem; height: 0.9rem; }
+  .option input:checked + .tick { background: var(--primary-accent-color); color: #fff; }
+  .option input:focus-visible + .tick { outline: var(--focus-outline-size) solid var(--primary-foreground-color); outline-offset: 2px; }
+  .option-title { display: block; font-weight: 600; }
+  .option-desc { display: block; font-size: 0.875rem; color: var(--text-dim); }
+  .note { margin: 1.1rem 0; font-size: 0.875rem; color: var(--text-faint); }
+  .note.is-warn { color: var(--tertiary-accent-color); }
+  .note.is-warn .link-btn { color: var(--tertiary-accent-color); }
+  .progress { margin-top: 0.25rem; }
+  .progress-label { display: flex; align-items: center; gap: 0.6rem; font-size: 0.92rem; color: var(--text-dim); }
+  .progress-track { margin-top: 0.6rem; height: 0.35rem; border-radius: 1rem; background: var(--overlay-strong); overflow: hidden; }
+  .progress-bar { height: 100%; width: 0; border-radius: 1rem; background: var(--primary-accent-color); transition: width 0.25s ease; }
+
+  .result h3 { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.35rem; font-size: 1.05rem; }
+  .result h3 svg { width: 1.25rem; height: 1.25rem; }
+  .result.is-ok h3 svg { color: var(--secondary-accent-color); }
+  .result.is-error h3 { color: var(--tertiary-accent-color); }
+  .result p { margin: 0 0 0.5rem; color: var(--text-dim); font-size: 0.95rem; }
+  .result strong { color: var(--primary-foreground-color); }
+  .result .link-btn { margin-top: 0.25rem; }
+  .result:focus { outline: none; }
+
+  footer { max-width: 40rem; margin: 0 auto; padding: 0 1rem 2.5rem; text-align: center; font-size: 0.85rem; color: var(--text-faint); }
+  footer p { margin: 0; }
+  footer a { color: var(--text-dim); }
+
+  @media (max-width: 30rem) {
+    main { padding-top: 1.25rem; }
+    .card { padding: 1.15rem; }
+    .wordmark { height: 0.85rem; margin-left: 0.5rem; }
+    .brand-divider { margin: 0 0.6rem; }
+    .brand-name { font-size: 0.85rem; }
+    .topbar-link span { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation-duration: 2s !important; }
   }
 </style>
 </head>
 <body>
-  <div class="topbar">
+  <header class="topbar">
     <div class="topbar-inner">
-      <img src="https://web.stremio.com/images/stremio_symbol.png" alt="Stremio">
-      <div class="name">Migration Tool <span class="dim">for Stremio</span></div>
+      <div class="brand">
+        <img class="brand-mark" src="data:image/png;base64,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" alt="" width="32" height="32">
+        <img class="wordmark" src="data:image/png;base64,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" alt="Stremio" width="124" height="16">
+        <span class="brand-divider" aria-hidden="true"></span>
+        <span class="brand-name">Migration Tool</span>
+      </div>
+      <a class="topbar-link" href="https://github.com/RobbyDock/stremio-migration-tool" target="_blank" rel="noopener" aria-label="Source code on GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.56 9.56 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        <span>Source</span>
+      </a>
     </div>
-  </div>
+  </header>
 
-  <div class="container">
-    <p class="lede">Move your library and installed addons to a new Stremio account.</p>
+  <main>
+    <section class="hero">
+      <h1>Move your Stremio library to a new account</h1>
+      <p>Copy your library, watch progress and addons to another account.</p>
+      <p class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Your details go straight to Stremio and nowhere else.</p>
+    </section>
 
-    <div class="panel" id="source-panel">
-      <h2><span class="dot"></span>Source account</h2>
-      <p class="sub">The account you're migrating from</p>
-      <label for="source-email">Email</label>
-      <div class="field">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-        <input type="email" id="source-email" autocomplete="username" placeholder="you@example.com">
+    <!-- Step 1: old account -->
+    <section class="card" id="card-source" aria-labelledby="source-title">
+      <header class="card-head">
+        <span class="badge" aria-hidden="true"><span>1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <div>
+          <h2 id="source-title">Your old account</h2>
+          <p class="card-sub">The account you're moving from.</p>
+        </div>
+      </header>
+
+      <div class="card-body">
+        <form id="source-form" novalidate>
+          <div class="field">
+            <label for="source-email">Email</label>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <input class="input" type="email" id="source-email" name="email" autocomplete="section-old username" inputmode="email" placeholder="old@example.com" required>
+          </div>
+          <div class="field">
+            <label for="source-password">Password</label>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <input class="input has-toggle" type="password" id="source-password" name="password" autocomplete="section-old current-password" placeholder="Your Stremio password" required>
+            <button class="reveal" type="button" aria-label="Show password" aria-pressed="false" aria-controls="source-password"><svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.7 8.5 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-block" type="submit" id="source-submit">Sign in</button>
+          </div>
+          <p class="msg" id="source-msg" role="status" aria-live="polite"></p>
+          <div class="form-foot">
+            <button class="link-btn" type="button" id="source-file-button">Load a backup file instead</button>
+            <div class="help-slot"></div>
+          </div>
+          <input class="file-input" type="file" id="source-file" accept="application/json,.json" tabindex="-1" aria-hidden="true">
+        </form>
+
+        <div id="source-summary" hidden>
+          <p class="account"><span id="source-kind"></span> <strong id="source-name"></strong><button class="link-btn" type="button" id="source-change">Change</button></p>
+          <p class="meta" id="source-stats"></p>
+          <div class="posters" id="source-posters" aria-label="Recently watched titles"></div>
+          <div class="check" id="source-check"></div>
+        </div>
       </div>
-      <label for="source-password">Password</label>
-      <div class="field">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        <input type="password" id="source-password" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
-      </div>
-      <div class="action-row">
-        <button id="source-login">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
-          Login + Fetch
+    </section>
+
+    <!-- Step 2: backup -->
+    <section class="card" id="card-backup" aria-labelledby="backup-title">
+      <header class="card-head">
+        <span class="badge" aria-hidden="true"><span>2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <div>
+          <h2 id="backup-title">Save a backup<span class="optional">Recommended</span></h2>
+          <p class="card-sub">Lets you restore or rerun the copy later without your old password.</p>
+        </div>
+      </header>
+      <div class="card-body">
+        <button class="btn btn-block" type="button" id="backup-download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download backup
         </button>
-        <label class="file-label" for="source-file">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
-          Import backup JSON
-        </label>
-        <input type="file" id="source-file" accept="application/json,.json">
+        <p class="skip-line" id="backup-skip-line"><button class="link-btn" type="button" id="backup-skip">Skip without a backup</button></p>
+        <p class="done-line" id="backup-saved" hidden><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Saved <strong id="backup-file-name"></strong></span><button class="link-btn" type="button" id="backup-again">Download again</button></p>
+        <p class="done-line" id="backup-skipped" hidden><span>Skipped.</span><button class="link-btn" type="button" id="backup-late">Download backup</button></p>
+        <p class="done-line" id="backup-from-file" hidden><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Loaded from a backup file.</span></p>
       </div>
-      <div class="status" id="source-status"></div>
-      <div class="status" id="source-file-status"></div>
-    </div>
+    </section>
 
-    <div class="panel" id="dest-panel">
-      <h2><span class="dot"></span>Destination account</h2>
-      <p class="sub">The account you're migrating to</p>
-      <label for="dest-email">Email</label>
-      <div class="field">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-        <input type="email" id="dest-email" autocomplete="username" placeholder="you@example.com">
-      </div>
-      <label for="dest-password">Password</label>
-      <div class="field">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        <input type="password" id="dest-password" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
-      </div>
-      <button id="dest-login">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
-        Log in
-      </button>
-      <div class="status" id="dest-status"></div>
-    </div>
+    <!-- Step 3: new account -->
+    <section class="card" id="card-dest" aria-labelledby="dest-title">
+      <header class="card-head">
+        <span class="badge" aria-hidden="true"><span>3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <div>
+          <h2 id="dest-title">Your new account</h2>
+          <p class="card-sub">The account you're moving to.</p>
+        </div>
+      </header>
 
-    <button id="migrate" disabled>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
-      Migrate library & addons
-    </button>
-    <div class="status" id="migrate-status"></div>
-    <p class="hint">Runs entirely in this browser tab — nothing is sent anywhere except Stremio's own API.</p>
-  </div>
+      <div class="card-body">
+        <form id="dest-form" novalidate>
+          <div class="field">
+            <label for="dest-email">Email</label>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <input class="input" type="email" id="dest-email" name="email" autocomplete="section-new username" inputmode="email" placeholder="new@example.com" required>
+          </div>
+          <div class="field">
+            <label for="dest-password">Password</label>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <input class="input has-toggle" type="password" id="dest-password" name="password" autocomplete="section-new current-password" placeholder="Your Stremio password" required>
+            <button class="reveal" type="button" aria-label="Show password" aria-pressed="false" aria-controls="dest-password"><svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.7 8.5 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-block" type="submit" id="dest-submit">Sign in</button>
+          </div>
+          <p class="msg" id="dest-msg" role="status" aria-live="polite"></p>
+          <div class="form-foot">
+            <a href="https://web.stremio.com/#/intro?form=signup" target="_blank" rel="noopener">Create a new account</a>
+            <div class="help-slot"></div>
+          </div>
+        </form>
+
+        <div id="dest-summary" hidden>
+          <p class="account">Signed in as <strong id="dest-name"></strong><button class="link-btn" type="button" id="dest-change">Change</button></p>
+          <p class="meta" id="dest-stats"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 4: copy -->
+    <section class="card" id="card-migrate" aria-labelledby="migrate-title">
+      <header class="card-head">
+        <span class="badge" aria-hidden="true"><span>4</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <div>
+          <h2 id="migrate-title">Copy to new account</h2>
+        </div>
+      </header>
+
+      <div class="card-body">
+        <div id="migrate-plan" hidden>
+          <div class="options">
+            <label class="option">
+              <input type="checkbox" id="opt-library" checked>
+              <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <span><span class="option-title">Library and watch progress</span><span class="option-desc" id="plan-library"></span></span>
+            </label>
+            <label class="option">
+              <input type="checkbox" id="opt-addons" checked>
+              <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <span><span class="option-title">Addons</span><span class="option-desc" id="plan-addons"></span></span>
+            </label>
+          </div>
+          <p class="note" id="plan-note"></p>
+        </div>
+
+        <button class="btn btn-success btn-block" type="button" id="migrate" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+          <span id="migrate-label">Copy to new account</span>
+        </button>
+
+        <div class="progress" id="migrate-progress" hidden>
+          <div class="progress-label" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span><span id="progress-text"></span></div>
+          <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+        </div>
+
+        <div class="result" id="migrate-result" hidden tabindex="-1"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Unofficial. Not affiliated with Stremio. <a href="https://github.com/RobbyDock/stremio-migration-tool" target="_blank" rel="noopener">Source on GitHub</a></p>
+  </footer>
+
+  <template id="help-template">
+    <details class="help">
+      <summary>Signed up with Facebook or Apple?</summary>
+      <p>Set a password first: on <a href="https://web.stremio.com/#/intro?form=login" target="_blank" rel="noopener">Stremio's sign-in page</a>, choose <strong>Forgot password?</strong> and enter your Facebook or Apple email. Used Hide My Email? Your address ends in @privaterelay.appleid.com.</p>
+    </details>
+  </template>
 
   <script>
+    'use strict';
+
     const API_BASE = 'https://api.strem.io/api';
+    const WRITE_BATCH_SIZE = 200;
+    const POSTER_LIMIT = 12;
+    const DETAIL_LIMIT = 25;
+    const STATE_COUNT_FIELDS = ['timeWatched', 'timeOffset', 'overallTimeWatched', 'timesWatched', 'flaggedWatched', 'duration'];
 
-    async function apiRequest(path, body) {
-      const res = await fetch(`${API_BASE}/${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const json = await res.json();
-      if (json.error) {
-        throw new Error(json.error.message || 'Stremio API error');
-      }
-      return json.result;
-    }
-
-    async function login(email, password) {
-      const result = await apiRequest('login', { email, password });
-      return result.authKey;
-    }
-
-    async function getLibrary(authKey) {
-      const result = await apiRequest('datastoreGet', {
-        authKey,
-        collection: 'libraryItem',
-        all: true,
-      });
-      return result || [];
-    }
-
-    async function putLibrary(authKey, items) {
-      return apiRequest('datastorePut', {
-        authKey,
-        collection: 'libraryItem',
-        changes: items,
-      });
-    }
-
-    async function getAddons(authKey) {
-      const result = await apiRequest('addonCollectionGet', {
-        authKey,
-        update: true,
-      });
-      return (result && result.addons) || [];
-    }
-
-    async function putAddons(authKey, addons) {
-      return apiRequest('addonCollectionSet', { authKey, addons });
-    }
-
-    const state = {
-      source: { authKey: null, items: null, addons: null },
-      dest: { authKey: null },
+    const ICONS = {
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+      wrench: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4 2.5-2.5Z"/></svg>',
+      alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></svg>',
     };
 
-    function setStatus(el, message, kind) {
-      el.textContent = message;
-      el.className = 'status' + (kind ? ` ${kind}` : '');
+    // ---------- Stremio API ----------
+
+    class FriendlyError extends Error {
+      constructor(message, kind) {
+        super(message);
+        this.kind = kind;
+      }
     }
 
-    function updateMigrateButton() {
-      document.getElementById('migrate').disabled =
-        !(state.source.items && state.source.items.length && state.dest.authKey);
+    function toFriendlyApiError(error) {
+      const message = String((error && error.message) || '');
+      if (error.wrongEmail || error.code === 2 || /user not found/i.test(message)) {
+        return new FriendlyError('No Stremio account uses this email.', 'email');
+      }
+      if (error.wrongPass || /pass/i.test(message)) {
+        return new FriendlyError('Wrong password.', 'password');
+      }
+      if (error.code === 1 || /session/i.test(message)) {
+        return new FriendlyError('Session expired. Select Change and sign in again.', 'session');
+      }
+      return new FriendlyError(message ? `Stremio error: ${message}` : 'Stremio error. Try again.', 'api');
     }
 
-    function isValidTimestamp(value) {
-      if (typeof value !== 'string' || !value) return false;
-      return !Number.isNaN(Date.parse(value));
+    function serverError(status) {
+      return new FriendlyError(`Stremio didn't respond properly (error ${status}). Try again shortly.`, 'server');
     }
 
-    function validateLibrary(items) {
-      const report = {
-        total: items.length,
-        duplicateIds: [],
-        invalidMtime: [],
-        invalidCtime: [],
-        missingFields: [],
-      };
-      const seen = new Map();
-      const requiredFields = ['_id', '_mtime', '_ctime', 'state', 'name', 'type'];
-      items.forEach((item, i) => {
-        const id = item._id;
-        if (seen.has(id)) {
-          report.duplicateIds.push({ id, indices: [seen.get(id), i] });
-        } else {
-          seen.set(id, i);
-        }
-        if (!isValidTimestamp(item._mtime)) {
-          report.invalidMtime.push({ index: i, id, value: item._mtime, name: item.name });
-        }
-        if (!isValidTimestamp(item._ctime)) {
-          report.invalidCtime.push({ index: i, id, value: item._ctime });
-        }
-        requiredFields.forEach((field) => {
-          if (!(field in item)) report.missingFields.push({ index: i, id, field });
+    async function callApi(method, body) {
+      let response;
+      try {
+        response = await fetch(`${API_BASE}/${method}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
         });
-      });
-      return report;
+      } catch {
+        throw new FriendlyError("Can't reach Stremio. Check your connection.", 'network');
+      }
+      let json;
+      try {
+        json = await response.json();
+      } catch {
+        throw serverError(response.status);
+      }
+      if (json && json.error) throw toFriendlyApiError(json.error);
+      if (!response.ok) throw serverError(response.status);
+      return json ? json.result : null;
     }
 
-    function sanitizeLibrary(items) {
-      let fixedCount = 0;
-      const sanitized = items.map((item) => {
-        const needsMtime = !isValidTimestamp(item._mtime);
-        const needsCtime = !isValidTimestamp(item._ctime);
-        if (!needsMtime && !needsCtime) return item;
-        fixedCount++;
-        const fallback = isValidTimestamp(item.state && item.state.lastWatched)
-          ? item.state.lastWatched
+    const stremio = {
+      async login(email, password) {
+        const result = await callApi('login', { email, password });
+        if (!result || !result.authKey) throw new FriendlyError('Sign-in failed. Try again.', 'api');
+        const user = result.user || {};
+        return { authKey: result.authKey, userId: user._id || null, email: user.email || email };
+      },
+      logout(authKey) {
+        return callApi('logout', { authKey }).catch(() => {});
+      },
+      async getLibrary(authKey) {
+        const result = await callApi('datastoreGet', { authKey, collection: 'libraryItem', all: true });
+        return Array.isArray(result) ? result : [];
+      },
+      putLibrary(authKey, items) {
+        return callApi('datastorePut', { authKey, collection: 'libraryItem', changes: items });
+      },
+      async getAddons(authKey) {
+        const result = await callApi('addonCollectionGet', { authKey, update: true });
+        return (result && Array.isArray(result.addons)) ? result.addons : [];
+      },
+      putAddons(authKey, addons) {
+        return callApi('addonCollectionSet', { authKey, addons });
+      },
+    };
+
+    // ---------- Library checks and repairs ----------
+    // Rules follow stremio-core's LibraryItem: one bad item can stop the whole library from loading.
+
+    function isValidDate(value) {
+      return typeof value === 'string' && value !== '' && !Number.isNaN(Date.parse(value));
+    }
+
+    function timeOf(value) {
+      const parsed = Date.parse(value);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    function toCount(value) {
+      if (value === null || value === undefined || value === '' || typeof value === 'boolean') return null;
+      const number = Number(value);
+      return Number.isFinite(number) && number >= 0 ? Math.floor(number) : null;
+    }
+
+    function isPlainObject(value) {
+      return value !== null && typeof value === 'object' && !Array.isArray(value);
+    }
+
+    function guessType(state) {
+      const videoId = state && state.video_id;
+      return typeof videoId === 'string' && videoId.split(':').length >= 3 ? 'series' : 'movie';
+    }
+
+    function repairItem(raw, report) {
+      const item = { ...raw };
+      const fixes = [];
+
+      if (typeof item.name !== 'string' || !item.name.trim()) {
+        item.name = 'Untitled';
+        fixes.push('names');
+      }
+      const label = item.name === 'Untitled' ? `Untitled (${item._id})` : item.name;
+
+      const stateWasObject = isPlainObject(item.state);
+      const state = stateWasObject ? { ...item.state } : {};
+      let stateFixed = !stateWasObject;
+      for (const field of STATE_COUNT_FIELDS) {
+        const count = toCount(state[field]);
+        if (count === null) {
+          state[field] = 0;
+          stateFixed = true;
+        } else if (count !== state[field]) {
+          state[field] = count;
+          stateFixed = true;
+        }
+      }
+      if (state.lastWatched !== undefined && state.lastWatched !== null && state.lastWatched !== '' && !isValidDate(state.lastWatched)) {
+        state.lastWatched = null;
+        stateFixed = true;
+      }
+      item.state = state;
+      if (stateFixed) fixes.push('progress');
+
+      if (typeof item.type !== 'string' || !item.type) {
+        item.type = guessType(state);
+        fixes.push('types');
+      }
+
+      let flagsFixed = false;
+      for (const field of ['removed', 'temp']) {
+        if (typeof item[field] !== 'boolean') {
+          item[field] = item[field] === true || item[field] === 'true' || item[field] === 1;
+          flagsFixed = true;
+        }
+      }
+      if (flagsFixed) fixes.push('flags');
+
+      const badMtime = !isValidDate(item._mtime);
+      const badCtime = item._ctime !== undefined && item._ctime !== null && item._ctime !== '' && !isValidDate(item._ctime);
+      if (badMtime || badCtime) {
+        const fallback = isValidDate(state.lastWatched) ? state.lastWatched
+          : isValidDate(item._ctime) ? item._ctime
           : new Date().toISOString();
-        return {
-          ...item,
-          _mtime: needsMtime ? fallback : item._mtime,
-          _ctime: needsCtime ? fallback : item._ctime,
-        };
-      });
-      return { sanitized, fixedCount };
+        if (badMtime) item._mtime = fallback;
+        if (badCtime) item._ctime = fallback;
+        fixes.push('dates');
+      }
+
+      for (const fix of fixes) report[fix].push(label);
+      if (fixes.length) report.brokenIds.add(item._id);
+      return item;
     }
 
-    function formatReport(report) {
-      const lines = [];
-      lines.push(`Total library items: ${report.total}`);
-      lines.push(`Duplicate IDs: ${report.duplicateIds.length}`);
-      report.duplicateIds.forEach((d) => lines.push(`  - ${d.id} at indices ${d.indices.join(', ')}`));
-      lines.push(`Invalid/empty _mtime: ${report.invalidMtime.length}`);
-      report.invalidMtime.forEach((b) => lines.push(`  - [${b.index}] ${b.id} (${b.name || 'no name'}) _mtime=${JSON.stringify(b.value)}`));
-      lines.push(`Invalid/empty _ctime: ${report.invalidCtime.length}`);
-      report.invalidCtime.forEach((b) => lines.push(`  - [${b.index}] ${b.id} _ctime=${JSON.stringify(b.value)}`));
-      lines.push(`Missing required fields: ${report.missingFields.length}`);
-      report.missingFields.forEach((m) => lines.push(`  - [${m.index}] ${m.id} missing ${m.field}`));
-      return lines.join('\n');
+    function repairLibrary(rawItems) {
+      const report = {
+        skipped: 0, duplicates: [], dates: [], names: [], types: [], flags: [], progress: [],
+        brokenIds: new Set(), fixedIds: new Set(),
+      };
+      const byId = new Map();
+      for (const raw of rawItems) {
+        if (!isPlainObject(raw) || typeof raw._id !== 'string' || !raw._id) {
+          report.skipped++;
+          continue;
+        }
+        const item = repairItem(raw, report);
+        const existing = byId.get(item._id);
+        if (!existing) {
+          byId.set(item._id, item);
+          continue;
+        }
+        report.duplicates.push(item.name);
+        report.fixedIds.add(item._id);
+        if (timeOf(item._mtime) > timeOf(existing._mtime)) byId.set(item._id, item);
+      }
+      for (const id of report.brokenIds) report.fixedIds.add(id);
+      return { items: [...byId.values()], report };
     }
 
-    function appendReport(statusEl, report) {
-      const pre = document.createElement('pre');
-      pre.className = 'report';
-      pre.textContent = formatReport(report);
-      statusEl.appendChild(pre);
+    function repairAddons(rawAddons) {
+      const seen = new Set();
+      const addons = [];
+      let skipped = 0;
+      for (const addon of rawAddons) {
+        if (!isPlainObject(addon) || typeof addon.transportUrl !== 'string' || seen.has(addon.transportUrl)) {
+          skipped++;
+          continue;
+        }
+        seen.add(addon.transportUrl);
+        addons.push(addon);
+      }
+      return { addons, skipped };
     }
 
-    function downloadBackup(items, addons) {
-      const blob = new Blob([JSON.stringify({ items, addons }, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `stremio-backup-${Date.now()}.json`;
-      a.className = 'backup';
-      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="M6 12l6 6 6-6"/><path d="M4 20h16"/></svg>Download backup JSON';
-      return a;
+    function libraryCounts(items) {
+      const inLibrary = items.filter((item) => isPlainObject(item) && !item.removed && !item.temp).length;
+      return { inLibrary, history: items.length - inLibrary };
     }
 
-    document.getElementById('source-login').addEventListener('click', async () => {
-      const email = document.getElementById('source-email').value.trim();
-      const password = document.getElementById('source-password').value;
-      const statusEl = document.getElementById('source-status');
-      if (!email || !password) {
-        setStatus(statusEl, 'Enter email and password.', 'error');
+    // ---------- Backup files ----------
+
+    function backupFileName() {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      return `stremio-backup-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.json`;
+    }
+
+    function parseBackup(text) {
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new FriendlyError('Not a backup file from this tool.', 'file');
+      }
+      const items = Array.isArray(data) ? data : (isPlainObject(data) ? data.items : null);
+      const addons = isPlainObject(data) && Array.isArray(data.addons) ? data.addons : [];
+      if (!Array.isArray(items)) throw new FriendlyError('Not a backup file from this tool.', 'file');
+      if (!items.length && !addons.length) throw new FriendlyError('This backup is empty.', 'file');
+      const account = isPlainObject(data) && isPlainObject(data.account) ? data.account : null;
+      return { items, addons, account };
+    }
+
+    // ---------- State ----------
+
+    const state = {
+      source: null, // { kind, authKey, userId, email, fileName, rawItems, rawAddons, items, addons, report, skippedAddons }
+      backupName: null,
+      backupSkipped: false,
+      pendingRepair: false, // Fix in this account waits for the backup step
+      dest: null, // { authKey, userId, email, items, addons }
+      options: { library: true, addons: true },
+      busy: false,
+      result: null,
+    };
+
+    function isSameAccount(a, b) {
+      if (!a || !b) return false;
+      if (a.userId && b.userId) return a.userId === b.userId;
+      return !!a.email && !!b.email && a.email.toLowerCase() === b.email.toLowerCase();
+    }
+
+    // Same account on both sides: rewrite damaged titles in place
+    function isRepairMode() {
+      return isSameAccount(state.source, state.dest);
+    }
+
+    function buildPlan() {
+      const { source, dest } = state;
+      if (!source || !dest) return null;
+      const repair = isRepairMode();
+      const stamp = new Date().toISOString();
+
+      // Newest copy per ID, so stored duplicates don't look like pending updates
+      const destById = new Map();
+      for (const item of dest.items.filter(isPlainObject)) {
+        const existing = destById.get(item._id);
+        if (!existing || timeOf(item._mtime) > timeOf(existing._mtime)) destById.set(item._id, item);
+      }
+      const changes = [];
+      let added = 0;
+      let updated = 0;
+      let fixed = 0;
+      let kept = 0;
+      for (const item of source.items) {
+        const existing = destById.get(item._id);
+        if (!existing) {
+          changes.push(item);
+          added++;
+        } else if (repair && source.report.brokenIds.has(item._id)) {
+          // Newer mtime makes Stremio apps pull the fixed copy. Duplicates alone can't be fixed by a rewrite
+          changes.push({ ...item, _mtime: stamp });
+          fixed++;
+        } else if (timeOf(item._mtime) > timeOf(existing._mtime)) {
+          changes.push(item);
+          updated++;
+        } else {
+          kept++;
+        }
+      }
+
+      const cleanDest = repairAddons(dest.addons);
+      const destUrls = new Set(cleanDest.addons.map((addon) => addon.transportUrl));
+      const sourceUrls = new Set(source.addons.map((addon) => addon.transportUrl));
+      const newAddons = source.addons.filter((addon) => !destUrls.has(addon.transportUrl)).length;
+      // Old account order first, then anything only the new account has
+      const merged = [...source.addons, ...cleanDest.addons.filter((addon) => !sourceUrls.has(addon.transportUrl))];
+
+      return {
+        repair,
+        library: { changes, added, updated, fixed, kept },
+        addons: { merged, added: newAddons, existing: source.addons.length - newAddons, removed: cleanDest.skipped, write: newAddons > 0 || cleanDest.skipped > 0 },
+      };
+    }
+
+    function count(n, one, many) {
+      return `${n.toLocaleString()} ${n === 1 ? one : (many || `${one}s`)}`;
+    }
+
+    // ---------- DOM helpers ----------
+
+    const $ = (id) => document.getElementById(id);
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function setMessage(node, text, kind) {
+      node.replaceChildren();
+      node.className = `msg${kind ? ` is-${kind}` : ''}`;
+      if (!text) return;
+      if (kind === 'error') node.insertAdjacentHTML('beforeend', ICONS.alert);
+      if (kind === 'busy') node.append(el('span', 'spinner'));
+      node.append(el('span', '', text));
+    }
+
+    function setBusyButton(button, busy, busyText) {
+      if (busy) {
+        if (!button.dataset.label) button.dataset.label = button.textContent.trim();
+        button.disabled = true;
+        button.replaceChildren(el('span', 'spinner'), el('span', '', busyText));
+      } else {
+        button.disabled = false;
+        button.textContent = button.dataset.label || button.textContent;
+      }
+    }
+
+    function safeImageUrl(value) {
+      if (typeof value !== 'string' || !value) return null;
+      try {
+        const url = new URL(value);
+        return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function statsText(items, addonCount) {
+      const counts = libraryCounts(items);
+      const parts = [count(counts.inLibrary, 'title'), count(addonCount, 'addon')];
+      if (counts.history) parts.push(`${counts.history.toLocaleString()} in history`);
+      return parts.join(' · ');
+    }
+
+    function linkButton(text, onClick) {
+      const button = el('button', 'link-btn', text);
+      button.type = 'button';
+      button.addEventListener('click', onClick);
+      return button;
+    }
+
+    function renderPosters(container, items) {
+      container.replaceChildren();
+      const recent = items
+        .filter((item) => !item.removed && !item.temp)
+        .sort((a, b) => timeOf(b._mtime) - timeOf(a._mtime))
+        .slice(0, POSTER_LIMIT);
+      for (const item of recent) {
+        const poster = el('div', 'poster');
+        const fallback = () => poster.replaceChildren(el('span', '', item.name));
+        const url = safeImageUrl(item.poster);
+        if (url) {
+          const image = new Image();
+          image.alt = item.name;
+          image.loading = 'lazy';
+          image.decoding = 'async';
+          image.referrerPolicy = 'no-referrer';
+          image.addEventListener('error', fallback, { once: true });
+          image.src = url;
+          const title = el('span', 'poster-title', item.name);
+          title.setAttribute('aria-hidden', 'true');
+          poster.append(image, title);
+        } else {
+          fallback();
+        }
+        container.append(poster);
+      }
+    }
+
+    function detailList(names) {
+      const list = el('ul');
+      names.slice(0, DETAIL_LIMIT).forEach((name) => list.append(el('li', '', name)));
+      if (names.length > DETAIL_LIMIT) list.append(el('li', '', `and ${(names.length - DETAIL_LIMIT).toLocaleString()} more`));
+      return list;
+    }
+
+    function renderCheck(container, source) {
+      const { report, skippedAddons } = source;
+      const groups = [
+        [report.dates, 'Broken dates'],
+        [report.duplicates, 'Duplicates merged'],
+        [report.names, 'Missing names'],
+        [report.types, 'Missing type'],
+        [report.progress, 'Bad watch progress'],
+        [report.flags, 'Bad library flags'],
+      ].filter(([names]) => names.length);
+
+      container.replaceChildren();
+      const fixedTotal = report.fixedIds.size;
+      const anyIssue = fixedTotal || report.skipped || skippedAddons;
+      container.className = `check ${anyIssue ? 'is-fixed' : 'is-ok'}`;
+
+      const parts = [];
+      if (fixedTotal) parts.push(`Fixed ${count(fixedTotal, 'damaged title')}.`);
+      if (report.skipped) parts.push(`Skipped ${count(report.skipped, 'unreadable entry', 'unreadable entries')}.`);
+      if (skippedAddons) parts.push(`Skipped ${count(skippedAddons, 'bad addon')}.`);
+
+      const line = el('div', 'check-line');
+      const summary = el('span');
+      summary.insertAdjacentHTML('beforeend', anyIssue ? ICONS.wrench : ICONS.check);
+      summary.append(anyIssue ? parts.join(' ') : 'No problems found.');
+      line.append(summary);
+      container.append(line);
+
+      if (groups.length) {
+        const list = el('ul');
+        list.hidden = true;
+        for (const [names, title] of groups) {
+          const item = el('li', '', `${title} (${names.length.toLocaleString()})`);
+          item.append(detailList(names));
+          list.append(item);
+        }
+        const toggle = linkButton('Details', () => {
+          list.hidden = !list.hidden;
+          toggle.setAttribute('aria-expanded', String(!list.hidden));
+        });
+        toggle.setAttribute('aria-expanded', 'false');
+        line.append(toggle);
+        container.append(list);
+      }
+
+      // Offer an in-place repair when the old account itself is damaged
+      if (source.kind === 'account' && report.brokenIds.size && !state.dest) {
+        line.append(linkButton('Fix in this account', useSourceAsDest));
+      }
+    }
+
+    // ---------- Rendering ----------
+
+    function backupHandled() {
+      const { source } = state;
+      return !!source && (source.kind === 'file' || !!state.backupName || state.backupSkipped);
+    }
+
+    // Steps unlock in order. The backup step must be saved or skipped first
+    function renderSteps() {
+      const backup = backupHandled();
+      const done = {
+        source: !!state.source,
+        backup,
+        dest: !!state.dest,
+        migrate: !!(state.result && state.result.ok),
+      };
+      const locked = { source: false, backup: !state.source, dest: !backup, migrate: !backup || !state.dest };
+      const order = ['source', 'backup', 'dest', 'migrate'];
+      const current = order.find((step) => !done[step] && !locked[step]) || null;
+      for (const step of order) {
+        const card = $(`card-${step}`);
+        card.classList.toggle('is-done', done[step]);
+        card.classList.toggle('is-current', step === current);
+        card.classList.toggle('is-locked', locked[step]);
+        card.inert = locked[step];
+      }
+      const skipped = backup && state.source.kind !== 'file' && !state.backupName;
+      $('card-backup').classList.toggle('is-skipped', skipped);
+    }
+
+    function renderSource() {
+      const { source } = state;
+      $('source-form').hidden = !!source;
+      $('source-summary').hidden = !source;
+      if (!source) return;
+      $('source-kind').textContent = source.kind === 'file' ? 'Backup file' : 'Signed in as';
+      $('source-name').textContent = source.kind === 'file' ? source.fileName : source.email;
+      $('source-stats').textContent = statsText(source.items, source.addons.length);
+      renderPosters($('source-posters'), source.items);
+      renderCheck($('source-check'), source);
+    }
+
+    function renderBackup() {
+      const { source } = state;
+      const fromFile = !!source && source.kind === 'file';
+      const saved = !!source && !fromFile && !!state.backupName;
+      const skipped = !!source && !fromFile && !saved && state.backupSkipped;
+      $('backup-download').hidden = fromFile || saved || skipped;
+      $('backup-download').disabled = !source;
+      $('backup-skip-line').hidden = fromFile || saved || skipped;
+      $('backup-from-file').hidden = !fromFile;
+      $('backup-saved').hidden = !saved;
+      $('backup-skipped').hidden = !skipped;
+      if (saved) $('backup-file-name').textContent = state.backupName;
+    }
+
+    function renderDest() {
+      const { dest } = state;
+      $('dest-form').hidden = !!dest;
+      $('dest-summary').hidden = !dest;
+      if (!dest) return;
+      $('dest-name').textContent = dest.email;
+      $('dest-stats').textContent = isRepairMode()
+        ? 'Same account as step 1, so step 4 repairs it in place.'
+        : `Already has ${statsText(dest.items, dest.addons.length)}`;
+    }
+
+    function plannedWork(plan) {
+      return (state.options.library ? plan.library.changes.length : 0) + (state.options.addons && plan.addons.write ? 1 : 0);
+    }
+
+    // Reason the copy can't run yet, once both accounts are ready
+    function planBlocker(plan) {
+      if (!plan) return 'locked';
+      if (!state.options.library && !state.options.addons) return 'Choose something to copy';
+      if (!plannedWork(plan)) return plan.repair ? 'Nothing to fix' : 'Nothing new to copy';
+      return null;
+    }
+
+    function libraryPlanText(plan) {
+      const lib = plan.library;
+      const parts = [];
+      if (lib.fixed) parts.push(`Fixes ${count(lib.fixed, 'title')}.`);
+      if (lib.added) parts.push(plan.repair ? `Restores ${lib.added.toLocaleString()} missing.` : `Adds ${count(lib.added, 'title')}.`);
+      if (lib.updated) parts.push(`Updates ${lib.updated.toLocaleString()}.`);
+      if (lib.kept && !plan.repair) parts.push(`${lib.kept.toLocaleString()} already up to date.`);
+      return parts.join(' ') || (plan.repair ? 'No problems found.' : 'No titles to copy.');
+    }
+
+    function addonPlanText(plan) {
+      const addons = plan.addons;
+      if (plan.repair) return addons.removed ? `Removes ${count(addons.removed, 'bad entry', 'bad entries')}.` : 'No problems found.';
+      if (!state.source.addons.length) return 'No addons to copy.';
+      if (!addons.added) return 'All already installed.';
+      return `Adds ${addons.added.toLocaleString()}.${addons.existing ? ` ${addons.existing.toLocaleString()} already installed.` : ''}`;
+    }
+
+    function renderPlanNote(plan) {
+      const note = $('plan-note');
+      note.replaceChildren();
+      // Only a repair writes to the old account, so only then is a backup pressing
+      const needsBackup = plan.repair && plannedWork(plan) > 0 && state.source.kind !== 'file' && !state.backupName;
+      note.className = needsBackup ? 'note is-warn' : 'note';
+      if (needsBackup) {
+        note.append('No backup saved yet. ', linkButton('Save one', downloadBackup));
+      } else {
+        note.textContent = plan.repair ? 'Only damaged entries are changed.' : 'Nothing is removed from either account.';
+      }
+    }
+
+    function renderMigrate() {
+      const plan = buildPlan();
+      const repair = !!plan && plan.repair;
+      const finished = !!(state.result && state.result.ok);
+      const blocker = planBlocker(plan);
+      $('migrate-title').textContent = repair ? 'Repair account' : 'Copy to new account';
+      $('migrate-plan').hidden = !plan || finished || state.busy;
+
+      if (plan) {
+        $('plan-library').textContent = libraryPlanText(plan);
+        $('plan-addons').textContent = addonPlanText(plan);
+        $('opt-library').checked = state.options.library;
+        $('opt-addons').checked = state.options.addons;
+        renderPlanNote(plan);
+      }
+
+      // When there is nothing to do, the disabled button says why
+      const button = $('migrate');
+      button.disabled = !!blocker || state.busy;
+      button.hidden = state.busy || finished;
+      const verb = repair ? 'Repair account' : 'Copy to new account';
+      let label = verb;
+      if (blocker && blocker !== 'locked') label = blocker;
+      else if (state.result && !state.result.ok) label = 'Try again';
+      $('migrate-label').textContent = label;
+
+      $('migrate-progress').hidden = !state.busy;
+      renderResult();
+    }
+
+    function renderResult() {
+      const box = $('migrate-result');
+      const { result } = state;
+      box.hidden = !result || state.busy;
+      if (!result) return;
+      box.replaceChildren();
+      box.className = `result ${result.ok ? 'is-ok' : 'is-error'}`;
+      box.style.marginTop = result.ok ? '' : '1rem';
+
+      const heading = el('h3');
+      heading.insertAdjacentHTML('beforeend', result.ok ? ICONS.check : ICONS.alert);
+
+      if (result.error) {
+        heading.append(el('span', '', result.repair ? "Repair didn't finish" : "Copy didn't finish"));
+        const reason = /[.!?]$/.test(result.error) ? result.error : `${result.error}.`;
+        box.append(heading, el('p', '', `${reason} Nothing was removed, so it's safe to try again.`));
         return;
       }
-      setStatus(statusEl, 'Logging in...');
-      try {
-        const authKey = await login(email, password);
-        state.source.authKey = authKey;
-        setStatus(statusEl, 'Logged in. Fetching library & addons...');
-        const items = await getLibrary(authKey);
-        const addons = await getAddons(authKey);
-        const report = validateLibrary(items);
-        const { sanitized, fixedCount } = sanitizeLibrary(items);
-        state.source.items = sanitized;
-        state.source.addons = addons;
-        let msg = `Fetched ${items.length} library item(s) and ${addons.length} addon(s).`;
-        if (fixedCount) {
-          msg += ` Sanitized ${fixedCount} item(s) with invalid/empty _mtime or _ctime (these would otherwise break the destination library on load).`;
-        }
-        setStatus(statusEl, msg, 'ok');
-        appendReport(statusEl, report);
-        statusEl.appendChild(downloadBackup(sanitized, addons));
-      } catch (err) {
-        state.source.authKey = null;
-        state.source.items = null;
-        state.source.addons = null;
-        setStatus(statusEl, `Error: ${err.message}`, 'error');
-      }
-      updateMigrateButton();
-    });
 
-    document.getElementById('source-file').addEventListener('change', async () => {
-      const input = document.getElementById('source-file');
-      const statusEl = document.getElementById('source-file-status');
+      if (!result.ok) {
+        heading.append(el('span', '', 'Some items are missing'));
+        const missing = [];
+        if (result.missingTitles) missing.push(count(result.missingTitles, 'title'));
+        if (result.missingAddons) missing.push(count(result.missingAddons, 'addon'));
+        box.append(heading, el('p', '', `${missing.join(' and ')} did not arrive. Select Try again.`));
+        return;
+      }
+
+      // Card badge already shows success, so no heading here
+      const summary = el('p');
+      if (result.repair) {
+        summary.append(el('strong', '', count(result.verifiedTitles || 0, 'title')), ' fixed and verified. Restart Stremio on your devices to reload the library.');
+      } else {
+        const parts = [];
+        if (result.verifiedTitles !== null) parts.push(count(result.verifiedTitles, 'title'));
+        if (result.verifiedAddons !== null) parts.push(count(result.verifiedAddons, 'addon'));
+        summary.append(el('strong', '', parts.join(' and ')), ' verified. Sign out of Stremio on your devices, then sign in with ', el('strong', '', state.dest.email), '.');
+      }
+      box.append(summary, linkButton('Start over', startOver));
+    }
+
+    function render() {
+      renderSteps();
+      renderSource();
+      renderBackup();
+      renderDest();
+      renderMigrate();
+    }
+
+    function focusStep(step) {
+      const card = $(`card-${step}`);
+      const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      card.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+      const target = card.querySelector('button:not([hidden]):not(:disabled), input');
+      if (target) target.focus({ preventScroll: true });
+    }
+
+    // ---------- Actions ----------
+
+    function readCredentials(prefix) {
+      const emailInput = $(`${prefix}-email`);
+      const passwordInput = $(`${prefix}-password`);
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      emailInput.removeAttribute('aria-invalid');
+      passwordInput.removeAttribute('aria-invalid');
+      if (!email || !emailInput.checkValidity()) {
+        emailInput.setAttribute('aria-invalid', 'true');
+        emailInput.focus();
+        return { error: email ? 'Check your email address.' : 'Enter your email.' };
+      }
+      if (!password) {
+        passwordInput.setAttribute('aria-invalid', 'true');
+        passwordInput.focus();
+        return { error: 'Enter your password.' };
+      }
+      return { email, password };
+    }
+
+    function markCredentialError(prefix, err) {
+      if (err.kind === 'email') $(`${prefix}-email`).setAttribute('aria-invalid', 'true');
+      if (err.kind === 'password') {
+        $(`${prefix}-password`).setAttribute('aria-invalid', 'true');
+        const help = $(`card-${prefix}`).querySelector('.help');
+        if (help) help.open = true;
+      }
+    }
+
+    function loadSource(data) {
+      const { items, report } = repairLibrary(data.rawItems);
+      const { addons, skipped } = repairAddons(data.rawAddons);
+      state.source = { ...data, items, report, addons, skippedAddons: skipped };
+      state.backupName = null;
+      state.backupSkipped = false;
+      state.pendingRepair = false;
+      state.result = null;
+    }
+
+    async function signInSource(event) {
+      event.preventDefault();
+      const message = $('source-msg');
+      const button = $('source-submit');
+      const credentials = readCredentials('source');
+      if (credentials.error) return setMessage(message, credentials.error, 'error');
+
+      setBusyButton(button, true, 'Signing in');
+      setMessage(message, '');
+      try {
+        const session = await stremio.login(credentials.email, credentials.password);
+        setBusyButton(button, true, 'Reading library');
+        const [rawItems, rawAddons] = await Promise.all([stremio.getLibrary(session.authKey), stremio.getAddons(session.authKey)]);
+        if (!rawItems.length && !rawAddons.length) {
+          stremio.logout(session.authKey);
+          throw new FriendlyError('This account has nothing to move.', 'empty');
+        }
+        loadSource({ kind: 'account', authKey: session.authKey, userId: session.userId, email: session.email, rawItems, rawAddons });
+        $('source-password').value = '';
+        render();
+        $('source-change').focus();
+      } catch (err) {
+        markCredentialError('source', err);
+        setMessage(message, err.message, 'error');
+      } finally {
+        setBusyButton(button, false);
+      }
+    }
+
+    async function loadSourceFile() {
+      const input = $('source-file');
+      const message = $('source-msg');
       const file = input.files && input.files[0];
+      input.value = '';
       if (!file) return;
-      setStatus(statusEl, 'Reading file...');
+      setMessage(message, `Reading ${file.name}`, 'busy');
       try {
-        const text = await file.text();
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch (err) {
-          throw new Error(`File is not valid JSON: ${err.message}`);
-        }
-        const items = Array.isArray(data) ? data : data.items;
-        const addons = Array.isArray(data) ? [] : (data.addons || []);
-        if (!Array.isArray(items)) {
-          throw new Error('Expected a backup file with an "items" array (as produced by this tool\'s backup download).');
-        }
-        const report = validateLibrary(items);
-        const { sanitized, fixedCount } = sanitizeLibrary(items);
-        state.source.authKey = null;
-        state.source.items = sanitized;
-        state.source.addons = addons;
-        let msg = `Loaded ${items.length} library item(s) and ${addons.length} addon(s) from file.`;
-        if (fixedCount) {
-          msg += ` Sanitized ${fixedCount} item(s) with invalid/empty _mtime or _ctime.`;
-        }
-        setStatus(statusEl, msg, 'ok');
-        appendReport(statusEl, report);
+        const backup = parseBackup(await file.text());
+        const account = backup.account || {};
+        setMessage(message, '');
+        loadSource({
+          kind: 'file',
+          authKey: null,
+          userId: account.id || null,
+          email: account.email || null,
+          fileName: file.name,
+          rawItems: backup.items,
+          rawAddons: backup.addons,
+        });
+        render();
+        $('source-change').focus();
       } catch (err) {
-        state.source.items = null;
-        state.source.addons = null;
-        setStatus(statusEl, `Error: ${err.message}`, 'error');
+        setMessage(message, err.message, 'error');
       }
-      updateMigrateButton();
-    });
+    }
 
-    document.getElementById('dest-login').addEventListener('click', async () => {
-      const email = document.getElementById('dest-email').value.trim();
-      const password = document.getElementById('dest-password').value;
-      const statusEl = document.getElementById('dest-status');
-      if (!email || !password) {
-        setStatus(statusEl, 'Enter email and password.', 'error');
+    function forgetDest() {
+      if (state.dest && (!state.source || state.dest.authKey !== state.source.authKey)) stremio.logout(state.dest.authKey);
+      state.dest = null;
+    }
+
+    function changeSource() {
+      if (state.busy) return;
+      // A shared session means step 3 used this same sign-in
+      if (state.dest && state.source && state.dest.authKey === state.source.authKey) state.dest = null;
+      if (state.source && state.source.authKey) stremio.logout(state.source.authKey);
+      state.source = null;
+      state.backupName = null;
+      state.backupSkipped = false;
+      state.pendingRepair = false;
+      state.result = null;
+      setMessage($('source-msg'), '');
+      render();
+      $('source-email').focus();
+    }
+
+    function useSourceAsDest() {
+      const { source } = state;
+      if (!source || !source.authKey || state.busy) return;
+      if (!backupHandled()) {
+        state.pendingRepair = true;
+        render();
+        focusStep('backup');
         return;
       }
-      setStatus(statusEl, 'Logging in...');
+      state.pendingRepair = false;
+      state.dest = { authKey: source.authKey, userId: source.userId, email: source.email, items: source.rawItems, addons: source.rawAddons };
+      state.result = null;
+      render();
+      focusStep('migrate');
+    }
+
+    function downloadBackup() {
+      const { source } = state;
+      if (!source) return;
+      const payload = {
+        format: 'stremio-migration-backup',
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        account: { id: source.userId, email: source.email },
+        items: source.rawItems,
+        addons: source.rawAddons,
+      };
+      const name = backupFileName();
+      const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+      const link = el('a');
+      link.href = url;
+      link.download = name;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      const firstTime = !backupHandled();
+      state.backupName = name;
+      state.backupSkipped = false;
+      advanceFromBackup(firstTime, 'backup-again');
+    }
+
+    function skipBackup() {
+      state.backupSkipped = true;
+      advanceFromBackup(true, 'backup-late');
+    }
+
+    // Move on to the next step the first time the backup step is handled
+    function advanceFromBackup(firstTime, focusId) {
+      if (state.pendingRepair) return useSourceAsDest();
+      render();
+      if (firstTime && !state.dest) focusStep('dest');
+      else $(focusId).focus();
+    }
+
+    async function signInDest(event) {
+      event.preventDefault();
+      const message = $('dest-msg');
+      const button = $('dest-submit');
+      const credentials = readCredentials('dest');
+      if (credentials.error) return setMessage(message, credentials.error, 'error');
+
+      setBusyButton(button, true, 'Signing in');
+      setMessage(message, '');
       try {
-        const authKey = await login(email, password);
-        state.dest.authKey = authKey;
-        setStatus(statusEl, 'Logged in.', 'ok');
+        const session = await stremio.login(credentials.email, credentials.password);
+        setBusyButton(button, true, 'Checking account');
+        const [items, addons] = await Promise.all([stremio.getLibrary(session.authKey), stremio.getAddons(session.authKey)]);
+        state.dest = { authKey: session.authKey, userId: session.userId, email: session.email, items, addons };
+        state.result = null;
+        $('dest-password').value = '';
+        render();
+        $('dest-change').focus();
       } catch (err) {
-        state.dest.authKey = null;
-        setStatus(statusEl, `Error: ${err.message}`, 'error');
+        markCredentialError('dest', err);
+        setMessage(message, err.message, 'error');
+      } finally {
+        setBusyButton(button, false);
       }
-      updateMigrateButton();
+    }
+
+    function changeDest() {
+      if (state.busy) return;
+      forgetDest();
+      state.result = null;
+      setMessage($('dest-msg'), '');
+      render();
+      $('dest-email').focus();
+    }
+
+    function startOver() {
+      if (state.busy) return;
+      forgetDest();
+      if (state.source && state.source.authKey) stremio.logout(state.source.authKey);
+      state.source = null;
+      state.backupName = null;
+      state.backupSkipped = false;
+      state.pendingRepair = false;
+      state.result = null;
+      state.options = { library: true, addons: true };
+      setMessage($('source-msg'), '');
+      setMessage($('dest-msg'), '');
+      render();
+      window.scrollTo({ top: 0 });
+      $('source-email').focus({ preventScroll: true });
+    }
+
+    function setProgress(text, fraction) {
+      $('progress-text').textContent = text;
+      $('progress-bar').style.width = `${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%`;
+    }
+
+    async function runMigration() {
+      if (state.busy) return;
+      const plan = buildPlan();
+      if (planBlocker(plan)) return;
+
+      const { source, dest, options } = state;
+      const changes = options.library ? plan.library.changes : [];
+      const writeAddons = options.addons && plan.addons.write;
+      const totalSteps = changes.length + (writeAddons ? WRITE_BATCH_SIZE : 0) + WRITE_BATCH_SIZE;
+      let doneSteps = 0;
+
+      state.busy = true;
+      state.result = null;
+      render();
+      setProgress('Starting', 0);
+
+      try {
+        for (let start = 0; start < changes.length; start += WRITE_BATCH_SIZE) {
+          const batch = changes.slice(start, start + WRITE_BATCH_SIZE);
+          setProgress(`${plan.repair ? 'Fixing' : 'Copying'} titles ${(start + batch.length).toLocaleString()} of ${changes.length.toLocaleString()}`, doneSteps / totalSteps);
+          await stremio.putLibrary(dest.authKey, batch);
+          doneSteps += batch.length;
+        }
+        if (writeAddons) {
+          setProgress(plan.repair ? 'Fixing addons' : 'Copying addons', doneSteps / totalSteps);
+          await stremio.putAddons(dest.authKey, plan.addons.merged);
+          doneSteps += WRITE_BATCH_SIZE;
+        }
+
+        setProgress('Verifying', doneSteps / totalSteps);
+        const [destItems, destAddons] = await Promise.all([stremio.getLibrary(dest.authKey), stremio.getAddons(dest.authKey)]);
+        dest.items = destItems;
+        dest.addons = destAddons;
+        setProgress('Done', 1);
+
+        const destIds = new Set(destItems.filter(isPlainObject).map((item) => item._id));
+        const destUrls = new Set(destAddons.map((addon) => addon && addon.transportUrl));
+        const checkTitles = options.library && source.items.length > 0;
+        const checkAddons = options.addons && source.addons.length > 0;
+        let missingTitles = checkTitles ? source.items.filter((item) => !destIds.has(item._id)).length : 0;
+        const missingAddons = checkAddons ? source.addons.filter((addon) => !destUrls.has(addon.transportUrl)).length : 0;
+        let verifiedTitles = checkTitles ? source.items.length - missingTitles : null;
+
+        if (plan.repair) {
+          // Titles written in place must now pass the same checks
+          const recheck = repairLibrary(destItems).report.brokenIds;
+          const stillBroken = changes.filter((item) => recheck.has(item._id)).length;
+          missingTitles += stillBroken;
+          verifiedTitles = changes.length - stillBroken;
+        }
+        state.result = { ok: !missingTitles && !missingAddons, repair: plan.repair, verifiedTitles, verifiedAddons: checkAddons ? source.addons.length - missingAddons : null, missingTitles, missingAddons };
+        if (plan.repair && state.result.ok && source.kind === 'account') {
+          // Reflect the repaired account in step 1
+          const { backupName, backupSkipped, result } = state;
+          loadSource({ ...source, rawItems: destItems, rawAddons: destAddons });
+          state.backupName = backupName;
+          state.backupSkipped = backupSkipped;
+          state.result = result;
+        }
+      } catch (err) {
+        state.result = { ok: false, repair: plan.repair, error: err.message };
+      } finally {
+        state.busy = false;
+        render();
+        $('migrate-result').focus();
+      }
+    }
+
+    // ---------- Wiring ----------
+
+    function wireRevealButtons() {
+      for (const button of document.querySelectorAll('.reveal')) {
+        button.addEventListener('click', () => {
+          const input = $(button.getAttribute('aria-controls'));
+          const show = input.type === 'password';
+          input.type = show ? 'text' : 'password';
+          button.setAttribute('aria-pressed', String(show));
+          button.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+      }
+    }
+
+    function wireHelp() {
+      const template = $('help-template');
+      for (const slot of document.querySelectorAll('.help-slot')) {
+        slot.append(template.content.cloneNode(true));
+      }
+    }
+
+    function wireInputs() {
+      for (const input of document.querySelectorAll('.input')) {
+        input.addEventListener('input', () => input.removeAttribute('aria-invalid'));
+      }
+    }
+
+    $('source-form').addEventListener('submit', signInSource);
+    $('source-file-button').addEventListener('click', () => $('source-file').click());
+    $('source-file').addEventListener('change', loadSourceFile);
+    $('source-change').addEventListener('click', changeSource);
+    $('backup-download').addEventListener('click', downloadBackup);
+    $('backup-again').addEventListener('click', downloadBackup);
+    $('backup-skip').addEventListener('click', skipBackup);
+    $('backup-late').addEventListener('click', downloadBackup);
+    $('dest-form').addEventListener('submit', signInDest);
+    $('dest-change').addEventListener('click', changeDest);
+    $('migrate').addEventListener('click', runMigration);
+    $('opt-library').addEventListener('change', (event) => { state.options.library = event.target.checked; renderMigrate(); });
+    $('opt-addons').addEventListener('change', (event) => { state.options.addons = event.target.checked; renderMigrate(); });
+    window.addEventListener('beforeunload', (event) => {
+      if (state.busy) event.preventDefault();
     });
 
-    document.getElementById('migrate').addEventListener('click', async () => {
-      const statusEl = document.getElementById('migrate-status');
-      const button = document.getElementById('migrate');
-      if (!state.source.items || !state.source.items.length) {
-        setStatus(statusEl, 'Source library is empty — nothing to migrate.', 'error');
-        return;
-      }
-      button.disabled = true;
-      const addonCount = (state.source.addons || []).length;
-      setStatus(statusEl, `Migrating ${state.source.items.length} library item(s) and ${addonCount} addon(s)...`);
-      try {
-        await putLibrary(state.dest.authKey, state.source.items);
-        if (addonCount) {
-          await putAddons(state.dest.authKey, state.source.addons);
-        }
-        setStatus(statusEl, `Done. ${state.source.items.length} library item(s) and ${addonCount} addon(s) sent to the destination account.`, 'ok');
-      } catch (err) {
-        setStatus(statusEl, `Error: ${err.message}`, 'error');
-      }
-      button.disabled = false;
-    });
+    wireHelp();
+    wireRevealButtons();
+    wireInputs();
+    render();
   </script>
 </body>
 </html>
