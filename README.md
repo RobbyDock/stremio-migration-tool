@@ -1,6 +1,6 @@
 <div align="center">
 
-<p><img src=".github/assets/hero.png" alt="Stremio Migration Tool: move your Stremio library to a new account" width="100%"></p>
+<p><img src=".github/assets/banner.png" alt="Stremio Migration Tool: move your Stremio library to a new account" width="100%"></p>
 
 <a href="https://robbydock.github.io/stremio-migration-tool/"><img src=".github/assets/button-open.svg" alt="Open the tool" height="52"></a> <a href="https://raw.githubusercontent.com/RobbyDock/stremio-migration-tool/main/index.html"><img src=".github/assets/button-download.svg" alt="Download a local copy" height="52"></a>
 
