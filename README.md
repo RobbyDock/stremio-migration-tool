@@ -1,19 +1,10 @@
 <div align="center">
 
-<img src=".github/assets/hero.png" alt="Stremio Migration Tool: move your Stremio library to a new account" width="100%">
+<p><img src=".github/assets/hero.png" alt="Stremio Migration Tool: move your Stremio library to a new account" width="100%"></p>
 
-<br>
+<a href="https://robbydock.github.io/stremio-migration-tool/"><img src=".github/assets/button-open.svg" alt="Open the tool" height="52"></a> <a href="https://raw.githubusercontent.com/RobbyDock/stremio-migration-tool/main/index.html"><img src=".github/assets/button-download.svg" alt="Download a local copy" height="52"></a>
 
-<a href="https://robbydock.github.io/stremio-migration-tool/"><img src=".github/assets/button-open.svg" alt="Open the tool" height="52"></a>
-&nbsp;
-<a href="https://raw.githubusercontent.com/RobbyDock/stremio-migration-tool/main/index.html"><img src=".github/assets/button-download.svg" alt="Download a local copy" height="52"></a>
-
-<br><br>
-
-![Runs in your browser](https://img.shields.io/badge/runs_in-your_browser-7b5bf5?style=flat-square)
-![Nothing to install](https://img.shields.io/badge/install-nothing-22b365?style=flat-square)
-![Single file](https://img.shields.io/badge/single-index.html-1245a6?style=flat-square)
-![Unofficial](https://img.shields.io/badge/unofficial-not_affiliated_with_Stremio-555?style=flat-square)
+![Runs in your browser](https://img.shields.io/badge/runs_in-your_browser-7b5bf5?style=flat-square) ![Nothing to install](https://img.shields.io/badge/install-nothing-22b365?style=flat-square) ![Single file](https://img.shields.io/badge/single-index.html-1245a6?style=flat-square) ![Unofficial](https://img.shields.io/badge/unofficial-not_affiliated_with_Stremio-555?style=flat-square)
 
 </div>
 
@@ -36,31 +27,12 @@ This tool copies your **library**, **watch progress** and **addons** from one St
 
 ## 🚀 How to use it
 
-```mermaid
-flowchart LR
-    A["1️⃣ Old account<br>Sign in or load a backup"] --> B["2️⃣ Backup<br>Download or skip"]
-    B --> C["3️⃣ New account<br>Sign in"]
-    C --> D["4️⃣ Copy<br>Choose library and addons"]
-    D --> E(["🎉 Done<br>Sign in to Stremio with the new account"])
-```
-
 1. **Your old account.** Sign in to the account you are moving from. The tool reads your library and addons and checks them. If you already have a backup file, select **Load a backup file instead**.
 2. **Save a backup.** Select **Download backup**. This is optional but recommended.
 3. **Your new account.** Sign in to the account you are moving to. No account yet? Select **Create a new account**.
 4. **Copy to new account.** Choose what to copy and start. The tool confirms when every item has arrived.
 
 When it is finished, sign out of Stremio on your devices and sign in with the new account.
-
-<table>
-  <tr>
-    <td width="50%"><img src="screenshots/main.jpg" alt="Step 1: sign in to your old account"></td>
-    <td width="50%"><img src="screenshots/done.jpg" alt="Step 4: copy finished"></td>
-  </tr>
-  <tr>
-    <td align="center"><sub>Sign in and see your library</sub></td>
-    <td align="center"><sub>Copy finished and verified</sub></td>
-  </tr>
-</table>
 
 ## 🩺 Data check and repair
 
