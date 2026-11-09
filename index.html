@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-o9iXCc9j78w9RmrVZWkftJ8zkhDFCY/j1Halo1sSf6g='; style-src 'unsafe-inline'; img-src https: data:; font-src data:; connect-src https://api.strem.io; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-xUW6XyqWSPO+LHZxP9hBDHYhM8+wEZnINQvkNGPI0Rk='; style-src 'unsafe-inline'; img-src https: data:; font-src data:; connect-src https://api.strem.io; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0c0b11">
@@ -768,7 +768,8 @@
         if (!isPlainObject(item)) continue;
         const itemState = isPlainObject(item.state) ? item.state : {};
         const watched = Number(itemState.flaggedWatched) > 0 || Number(itemState.timesWatched) > 0;
-        const lastWatched = isValidDate(itemState.lastWatched) ? new Date(itemState.lastWatched).toISOString().slice(0, 10) : '';
+        // A zero timestamp means never watched, not 1 January 1970
+        const lastWatched = isValidDate(itemState.lastWatched) && Date.parse(itemState.lastWatched) > 0 ? new Date(itemState.lastWatched).toISOString().slice(0, 10) : '';
         rows.push([item.name, item.type, item.year, item._id, item.removed || item.temp ? 'No' : 'Yes', watched ? 'Yes' : 'No', lastWatched]);
       }
       return '﻿' + rows.map((row) => row.map(csvCell).join(',')).join('\r\n') + '\r\n';
