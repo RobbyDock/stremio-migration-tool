@@ -22,12 +22,13 @@ This tool copies your **library**, **watch progress** and **addons** from one St
 | 🧩 | **Addons** | Your installed addons, in the same order. |
 | 🔀 | **Safe merge** | Adds what is missing. Updates a title only when the old copy is newer. Never removes anything. |
 | 🩺 | **Data check** | Finds and fixes damaged entries that can stop Stremio from loading your library. |
-| 💾 | **Backup file** | Save your old account to a file. Restore or copy from it later without the old password. |
+| 💾 | **Backup file** | Save your old account to a file. Restore or copy from it later without the old password. Stremio's own data export can be loaded too. |
+| 📄 | **CSV list** | Download your library as a spreadsheet, with watched status and last watched date. |
 | ✅ | **Verified** | Reads the new account back after the copy to confirm every item arrived. |
 
 ## 🚀 How to use it
 
-1. **Your old account.** Sign in to the account you are moving from. The tool reads your library and addons and checks them. If you already have a backup file, select **Load a backup file instead**.
+1. **Your old account.** Sign in to the account you are moving from. The tool reads your library and addons and checks them. If you already have a backup file, or a data export from Stremio's account settings, select **Load a backup file instead**. To get a list of your titles, select **Download as CSV**.
 2. **Save a backup.** Select **Download backup**. This is optional but recommended.
 3. **Your new account.** Sign in to the account you are moving to. No account yet? Select **Create a new account**.
 4. **Copy to new account.** Choose what to copy and start. The tool confirms when every item has arrived.
